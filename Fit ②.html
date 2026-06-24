@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jazmin's J Empire Fitness Plan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --cream: #F5F0E8;
+  --cream-dark: #EDE6D6;
+  --terracotta: #C4714A;
+  --terracotta-light: #D4876A;
+  --terracotta-pale: #F2E4DA;
+  --rose-gold: #B8866A;
+  --rose-pale: #F0E4DC;
+  --brown-dark: #3D2B1F;
+  --brown-mid: #6B4C3B;
+  --brown-light: #9B7B6A;
+  --green-soft: #7A9E7E;
+  --green-pale: #E8F0E8;
+  --gold: #C8A96E;
+  --gold-pale: #F5EDD8;
+  --white: #FDFAF5;
+  --shadow: rgba(61,43,31,0.12);
+  /* legacy alias for JS */
+  --green: #7A9E7E;
+  --red: #B05050;
+  --muted: var(--brown-light);
+  --deep: var(--brown-dark);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--cream); color:var(--brown-dark); min-height:100vh; }
+
+/* HEADER */
+header {
+  background: linear-gradient(160deg, var(--brown-dark) 0%, var(--brown-mid) 100%);
+  padding:36px 20px 28px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+header::before { content:''; position:absolute; top:-60px; right:-60px; width:220px; height:220px; border-radius:50%; background:radial-gradient(circle,rgba(200,169,110,0.18),transparent 70%); }
+header::after  { content:''; position:absolute; bottom:-40px; left:-40px; width:160px; height:160px; border-radius:50%; background:radial-gradient(circle,rgba(196,113,74,0.14),transparent 70%); }
+.crown { font-size:26px; display:block; margin-bottom:6px; position:relative; z-index:1; }
+header h1 { font-family:'Cormorant Garamond',serif; color:var(--gold); font-size:clamp(22px,6vw,36px); font-weight:700; line-height:1.1; position:relative; z-index:1; }
+header h1 span { font-style:italic; color:#fff; }
+header p { color:var(--brown-light); font-size:11px; margin-top:8px; letter-spacing:0.08em; text-transform:uppercase; position:relative; z-index:1; }
+.stats-bar { display:flex; justify-content:center; gap:10px; margin-top:18px; flex-wrap:wrap; position:relative; z-index:1; }
+.stat { background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); border-radius:12px; padding:9px 14px; text-align:center; }
+.stat .val { font-family:'Cormorant Garamond',serif; color:var(--gold); font-size:17px; font-weight:700; }
+.stat .lbl { color:rgba(255,255,255,0.45); font-size:9px; text-transform:uppercase; letter-spacing:0.08em; margin-top:1px; }
+
+/* NAV */
+nav { display:flex; overflow-x:auto; background:var(--brown-dark); padding:0 12px; gap:2px; -webkit-overflow-scrolling:touch; scrollbar-width:none; border-bottom:1px solid rgba(255,255,255,0.08); position:sticky; top:0; z-index:100; }
+nav::-webkit-scrollbar { display:none; }
+nav button { background:none; border:none; color:rgba(255,255,255,0.45); font-family:'DM Sans',sans-serif; font-size:11px; font-weight:500; padding:13px 11px; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; transition:all 0.2s; letter-spacing:0.02em; }
+nav button.active { color:var(--gold); border-bottom-color:var(--terracotta); }
+
+/* TABS */
+.tab { display:none; padding:20px 16px 60px; max-width:640px; margin:0 auto; }
+.tab.active { display:block; }
+
+/* TYPOGRAPHY */
+.sec-title { font-family:'Cormorant Garamond',serif; font-size:21px; color:var(--brown-dark); margin-bottom:5px; font-weight:700; }
+.sec-sub { color:var(--brown-light); font-size:13px; margin-bottom:18px; line-height:1.55; }
+
+/* CARDS */
+.card { background:var(--white); border-radius:14px; padding:18px 20px; margin-bottom:13px; box-shadow:0 2px 10px var(--shadow); }
+.card-pink  { border-left:4px solid var(--terracotta); }
+.card-gold  { border-left:4px solid var(--gold); }
+.card-deep  { border-left:4px solid var(--brown-dark); }
+.card-green { border-left:4px solid var(--green-soft); }
+.card-title { font-weight:700; font-size:14px; color:var(--brown-dark); margin-bottom:7px; display:flex; justify-content:space-between; align-items:flex-start; gap:8px; flex-wrap:wrap; }
+.card-body  { font-size:13px; color:var(--brown-mid); line-height:1.65; }
+.card-note  { font-size:12px; font-weight:600; color:var(--terracotta); margin-top:8px; }
+
+/* BADGES */
+.badge { font-size:10px; font-weight:700; padding:3px 9px; border-radius:20px; white-space:nowrap; }
+.b-yes { background:var(--green-pale); color:#4A7A4E; }
+.b-ok  { background:var(--gold-pale); color:#8C6C30; }
+.b-no  { background:#FADADD; color:#8B2020; }
+.b-pink{ background:var(--terracotta-pale); color:var(--terracotta); }
+
+/* TIP BOX */
+.tip { background:var(--gold-pale); border:1px solid rgba(200,169,110,0.4); border-radius:13px; padding:14px 16px; margin:12px 0; font-size:13px; color:var(--brown-dark); line-height:1.65; }
+.tip strong { color:var(--terracotta); }
+
+/* ALERT */
+.alert { background:linear-gradient(135deg,var(--brown-dark),var(--brown-mid)); border-radius:14px; padding:18px 20px; margin-bottom:14px; }
+.alert h3 { font-family:'Cormorant Garamond',serif; font-size:15px; color:var(--gold); margin-bottom:7px; }
+.alert p  { font-size:13px; color:rgba(255,255,255,0.72); line-height:1.65; }
+
+/* CHECKLIST */
+.cklist { list-style:none; }
+.cklist li { padding:9px 0; border-bottom:1px solid var(--cream-dark); font-size:13px; color:var(--brown-dark); display:flex; align-items:flex-start; gap:10px; line-height:1.5; }
+.cklist li:last-child { border-bottom:none; }
+.cklist li::before { content:'✦'; color:var(--terracotta); flex-shrink:0; margin-top:1px; font-size:11px; }
+
+/* WORKOUT */
+.day-card { background:var(--white); border-radius:14px; margin-bottom:16px; overflow:hidden; box-shadow:0 2px 10px var(--shadow); }
+.day-hdr { background:linear-gradient(135deg,var(--brown-dark),var(--brown-mid)); padding:14px 20px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.day-name { font-family:'Cormorant Garamond',serif; color:#fff; font-size:16px; font-weight:700; }
+.day-focus { background:var(--terracotta); color:#fff; font-size:10px; font-weight:700; padding:3px 10px; border-radius:20px; white-space:nowrap; }
+.ex-list { padding:12px 20px; }
+.ex { display:flex; align-items:flex-start; gap:11px; padding:10px 0; border-bottom:1px solid var(--cream-dark); }
+.ex:last-child { border-bottom:none; }
+.ex-num { background:var(--terracotta-pale); color:var(--terracotta); font-weight:700; font-size:11px; width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+.ex-info { flex:1; }
+.ex-name { font-weight:700; font-size:13px; color:var(--brown-dark); margin-bottom:2px; }
+.ex-detail { font-size:12px; color:var(--brown-light); line-height:1.45; }
+.ex-sets { font-size:11px; font-weight:700; color:var(--gold); flex-shrink:0; margin-top:3px; text-align:right; min-width:50px; }
+
+/* MEAL TABS */
+.mtoggle { display:flex; gap:7px; margin-bottom:16px; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; scrollbar-width:none; }
+.mtoggle::-webkit-scrollbar { display:none; }
+.mtoggle button { background:var(--white); border:1.5px solid var(--cream-dark); border-radius:20px; padding:7px 14px; font-size:11px; font-weight:600; color:var(--brown-light); cursor:pointer; white-space:nowrap; font-family:'DM Sans',sans-serif; transition:all 0.2s; flex-shrink:0; }
+.mtoggle button.active { background:var(--terracotta); border-color:var(--terracotta); color:#fff; }
+.mview { display:none; }
+.mview.active { display:block; }
+
+/* MEAL CARDS */
+.mc { background:var(--white); border-radius:12px; overflow:hidden; box-shadow:0 2px 8px var(--shadow); margin-bottom:11px; }
+.mc-hdr { padding:11px 16px; display:flex; justify-content:space-between; align-items:center; gap:6px; }
+.mc-hdr.gold-h { background:linear-gradient(135deg,var(--gold),#B89050); }
+.mc-hdr.pink-h { background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light)); }
+.mc-hdr.deep-h { background:linear-gradient(135deg,var(--brown-dark),var(--brown-mid)); }
+.mc-title { color:#fff; font-weight:700; font-size:13px; }
+.mc-cal   { color:rgba(255,255,255,0.75); font-size:11px; white-space:nowrap; }
+.mc-body  { padding:12px 16px; }
+.mc-desc  { font-size:12px; color:var(--brown-mid); line-height:1.55; margin-bottom:7px; }
+.macros { display:flex; gap:5px; flex-wrap:wrap; }
+.mp { font-size:10px; font-weight:700; padding:2px 8px; border-radius:10px; }
+.mp-p { background:var(--green-pale); color:#4A7A4E; }
+.mp-c { background:#DCF0FF; color:#2A6080; }
+.mp-f { background:var(--gold-pale); color:#8C6C30; }
+
+/* MACROS GRID */
+.mgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.mitem { background:var(--white); border-radius:12px; padding:16px 8px; text-align:center; box-shadow:0 2px 8px var(--shadow); }
+.mbig { font-family:'Cormorant Garamond',serif; font-size:24px; font-weight:700; }
+.mlbl { font-size:9px; color:var(--brown-light); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px; }
+
+/* TIMELINE */
+.tline { background:var(--white); border-radius:14px; padding:20px; box-shadow:0 2px 10px var(--shadow); }
+.titem { display:flex; gap:13px; margin-bottom:18px; align-items:flex-start; }
+.titem:last-child { margin-bottom:0; }
+.tdot { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:#fff; flex-shrink:0; font-family:'Cormorant Garamond',serif; }
+.tg { background:linear-gradient(135deg,var(--gold),#B89050); }
+.tp { background:linear-gradient(135deg,var(--terracotta),var(--terracotta-light)); }
+.td { background:linear-gradient(135deg,var(--brown-dark),var(--brown-mid)); }
+.ttitle { font-weight:700; font-size:14px; color:var(--brown-dark); margin-bottom:3px; }
+.tdesc  { font-size:12px; color:var(--brown-light); line-height:1.55; }
+
+/* WEIGHT LOG */
+.wlog-controls { display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.wlog-controls input { flex:1; min-width:130px; border:1.5px solid var(--cream-dark); border-radius:10px; padding:10px 14px; font-family:'DM Sans',sans-serif; font-size:14px; color:var(--brown-dark); background:var(--white); outline:none; }
+.wlog-controls input:focus { border-color:var(--terracotta-light); }
+.wbtn { background:var(--terracotta); color:#fff; border:none; border-radius:10px; padding:10px 20px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:opacity 0.2s; white-space:nowrap; }
+.wbtn:hover { opacity:0.88; }
+.wbtn-del { background:var(--white); color:#B05050; border:1.5px solid #FADADD; border-radius:8px; padding:6px 12px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.wbtn-del:hover { background:#FADADD; }
+
+.wentry { background:var(--white); border-radius:12px; padding:14px 16px; margin-bottom:9px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 2px 8px var(--shadow); }
+.wentry-left { display:flex; flex-direction:column; gap:3px; }
+.wentry-date { font-size:12px; color:var(--brown-light); }
+.wentry-weight { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:700; color:var(--brown-dark); }
+.wentry-change { font-size:11px; font-weight:700; }
+.wchange-down { color:var(--green-soft); }
+.wchange-up   { color:#B05050; }
+.wchange-same { color:var(--brown-light); }
+
+.wempty { text-align:center; padding:40px 20px; color:var(--brown-light); font-size:13px; }
+.wempty .wemoji { font-size:36px; margin-bottom:10px; }
+
+.wstats { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-bottom:16px; }
+.wstat-box { background:var(--white); border-radius:12px; padding:13px 10px; text-align:center; box-shadow:0 2px 8px var(--shadow); }
+.wstat-val { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:700; color:var(--terracotta); }
+.wstat-lbl { font-size:9px; color:var(--brown-light); text-transform:uppercase; letter-spacing:0.05em; margin-top:2px; }
+
+/* GOAL SPLIT */
+.gsplit { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.gbox { background:var(--white); border-radius:12px; padding:14px; text-align:center; box-shadow:0 2px 8px var(--shadow); }
+.gicon { font-size:24px; margin-bottom:6px; }
+.glabel { font-weight:700; font-size:13px; color:var(--brown-dark); margin-bottom:3px; }
+.gdesc  { font-size:11px; color:var(--brown-light); line-height:1.45; }
+
+/* PROTEIN RECS */
+.prec { background:var(--white); border-radius:12px; overflow:hidden; margin-bottom:11px; box-shadow:0 2px 8px var(--shadow); }
+.prec-hdr { background:linear-gradient(135deg,var(--brown-dark),var(--brown-mid)); padding:11px 16px; display:flex; justify-content:space-between; align-items:center; }
+.prec-name { color:#fff; font-weight:700; font-size:13px; }
+.prec-rank { background:var(--terracotta); color:#fff; font-size:10px; font-weight:700; padding:2px 9px; border-radius:20px; white-space:nowrap; }
+.prec-body { padding:12px 16px; font-size:12px; color:var(--brown-mid); line-height:1.55; }
+.prec-body strong { color:var(--brown-dark); }
+
+/* ENERGY DRINK */
+.edrink { background:var(--white); border-radius:14px; padding:18px 20px; margin-bottom:13px; box-shadow:0 2px 10px var(--shadow); border-top:4px solid var(--gold); }
+.edrink-title { font-weight:700; font-size:15px; color:var(--brown-dark); margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.edrink-body  { font-size:13px; color:var(--brown-mid); line-height:1.65; }
+.erule { background:var(--cream); border-radius:10px; padding:10px 13px; margin-top:10px; font-size:12px; font-weight:600; color:var(--brown-dark); line-height:1.55; }
+
+/* PHASE BAR */
+.pbar { display:flex; gap:7px; margin-bottom:14px; }
+.phase { flex:1; border-radius:10px; padding:10px 7px; text-align:center; background:var(--white); box-shadow:0 2px 6px var(--shadow); }
+.ph-num { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:700; color:var(--terracotta); }
+.ph-wk  { font-size:11px; font-weight:700; color:var(--brown-dark); margin-top:1px; }
+.ph-lbl { font-size:9px; color:var(--brown-light); letter-spacing:0.04em; margin-top:2px; }
+
+/* SECTION DIVIDER */
+.divider { border:none; border-top:1px solid var(--cream-dark); margin:20px 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="crown">👑</span>
+  <h1>Jazmin's <span>J Empire</span><br>Fitness Plan</h1>
+  <p>Glute Growth · Fat Loss · Full Transformation</p>
+  <div class="stats-bar">
+    <div class="stat"><div class="val">169 lbs</div><div class="lbl">Start</div></div>
+    <div class="stat"><div class="val">5'5"</div><div class="lbl">Height</div></div>
+    <div class="stat"><div class="val">3×/wk</div><div class="lbl">Lifting</div></div>
+    <div class="stat"><div class="val">12 wks</div><div class="lbl">Program</div></div>
+  </div>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('goals')">🎯 Goals</button>
+  <button onclick="showTab('supplements')">💊 Supplements</button>
+  <button onclick="showTab('workout')">🏋️ Workouts</button>
+  <button onclick="showTab('meals')">🍽️ Meals</button>
+  <button onclick="showTab('macros')">📊 Macros</button>
+  <button onclick="showTab('timeline')">📅 Timeline</button>
+  <button onclick="showTab('weighing')">⚖️ Food Weighing</button>
+  <button onclick="showTab('weightlog')">📉 Weight Log</button>
+</nav>
+
+<!-- ===== GOALS ===== -->
+<div id="goals" class="tab active">
+  <div class="sec-title">Your Two Goals Work Together</div>
+  <p class="sec-sub">Growing glutes AND losing fat at the same time — it's called body recomposition and works best for beginners. Here's the whole picture.</p>
+
+  <div class="gsplit">
+    <div class="gbox"><div class="gicon">🍑</div><div class="glabel">Grow Glutes</div><div class="gdesc">Lift heavy, eat protein, take creatine. Muscles grow when you challenge and feed them.</div></div>
+    <div class="gbox"><div class="gicon">🔥</div><div class="glabel">Lose Fat</div><div class="gdesc">Eat slightly less than you burn, do easy cardio on rest days, stay consistent.</div></div>
+  </div>
+
+  <div class="tip"><strong>🔑 How both happen at once:</strong> You eat just slightly less than you burn (about 1,750–1,850 cal/day), keep protein HIGH so your body builds muscle instead of losing it, and lift 3x/week. Your body burns stored fat for energy while also building your glutes. This works best for people new to lifting — which is exactly where you are right now. You are in the best possible position.</div>
+
+  <div class="pbar">
+    <div class="phase"><div class="ph-num">1</div><div class="ph-wk">Wks 1–4</div><div class="ph-lbl">Foundation</div></div>
+    <div class="phase"><div class="ph-num">2</div><div class="ph-wk">Wks 5–8</div><div class="ph-lbl">Build</div></div>
+    <div class="phase"><div class="ph-num">3</div><div class="ph-wk">Wks 9–12</div><div class="ph-lbl">Transform</div></div>
+  </div>
+
+  <div class="card card-pink">
+    <div class="card-title">📌 Your Daily Non-Negotiables</div>
+    <div class="card-body">
+      <ul class="cklist">
+        <li>Hit 120–130g protein every day — this builds your glutes</li>
+        <li>Drink 80–100oz of water daily — more on workout days</li>
+        <li>Take 5g creatine every day, including rest days</li>
+        <li>Lift weights Mon / Wed / Fri</li>
+        <li>Easy bike ride 20–30 min on rest days (Tue / Thu / Sat)</li>
+        <li>Sleep 7+ hours — your glutes literally grow while you sleep</li>
+        <li>Max 1 Alani or Bloom per day, nothing else caffeinated same day</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-gold">
+    <div class="card-title">🚫 What NOT To Do</div>
+    <div class="card-body">
+      <ul class="cklist">
+        <li>Do NOT eat under 1,600 calories — you'll lose muscle, not just fat</li>
+        <li>Do NOT do hard cardio every day — it fights glute growth</li>
+        <li>Do NOT cut carbs — carbs fuel your workouts and your glutes</li>
+        <li>Do NOT weigh yourself daily — hormones make weight bounce; weigh weekly</li>
+        <li>Do NOT quit at week 3 — the visible results come at weeks 5–8</li>
+        <li>Do NOT skip protein — undereating protein is the #1 reason women don't see glute results</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="alert">
+    <h3>📸 Do This Before Your First Workout</h3>
+    <p>Take a before photo right now — back view and side view. Store it privately. In 8 weeks the difference will shock you. Most people who quit do so because they have no before photo and can't see how far they've come. Don't skip this step.</p>
+  </div>
+
+  <div class="card card-deep">
+    <div class="card-title">🪞 About Your Stomach Skin</div>
+    <div class="card-body">Loose skin after 5 babies is incredibly common and has nothing to do with fitness failure. Exercise won't remove loose skin but building muscle underneath fills it out and dramatically improves how it looks. If you're considering a mommy makeover next year, getting strong and lean first will make your surgical results better and your recovery easier. You're making the right moves either way.</div>
+  </div>
+</div>
+
+<!-- ===== SUPPLEMENTS ===== -->
+<div id="supplements" class="tab">
+  <div class="sec-title">Supplements — What to Take</div>
+  <p class="sec-sub">Honest breakdown. No wasted money. Everything here is chosen specifically for your goal of growing glutes while losing fat.</p>
+
+  <div class="alert">
+    <h3>⚠️ The Truth About "Shreds"</h3>
+    <p>There are many products called "Shreds" online. Most are fat burners — caffeine, L-Carnitine, thermogenics. They may boost energy and slightly speed fat loss, but they do NOT build glutes. They can also suppress your appetite, which makes you accidentally eat too little protein — hurting muscle growth. If you want to try one, use it as a pre-workout on training days only. Never take it with coffee or your Alani.</p>
+  </div>
+
+  <div class="card card-pink">
+    <div class="card-title">💪 Creatine Monohydrate <span class="badge b-yes">#1 MUST HAVE</span></div>
+    <div class="card-body">The single most proven supplement for muscle growth in existence. It helps your muscles work harder every rep, recover faster, and grow bigger. Zero stimulants, no crash, no jitters. In the first week you might hold a tiny bit of water — totally normal, it goes away. Within 2–3 weeks you'll notice you can do more reps and lift heavier. That extra work = more glute growth.<br><br>
+    <strong>What to buy:</strong> Any brand of Creatine Monohydrate works — the molecule is the same everywhere. Optimum Nutrition, Nutricost, and BulkSupplements are all solid and cheap (~$18–22 for 2 months on Amazon).</div>
+    <div class="card-note">📌 5g daily — stir into water, milk, or your protein shake. Every single day including rest days.</div>
+  </div>
+
+  <div class="card card-gold">
+    <div class="card-title">🥤 Protein Powder <span class="badge b-yes">ESSENTIAL</span></div>
+    <div class="card-body">You cannot build glutes without enough protein. Most women eat 40–60g/day without realizing it. You need 120–130g. A protein shake fills that gap without cooking anything extra. Since you don't know your flavor yet, see the "Protein Picks" section below for exactly what to try first.<br><br>
+    ⚠️ Always read the label before buying — avoid any flavor with peanut butter or peanuts listed in ingredients. Stick to plain chocolate, vanilla, strawberry, or cookies &amp; cream.</div>
+    <div class="card-note">📌 1 shake per day mixed in water or regular milk. Best right after your workout or as a midday snack. Mix with milk for a creamier taste.</div>
+  </div>
+
+  <hr class="divider">
+  <div class="sec-title" style="font-size:17px;margin-bottom:12px;">🥤 Protein Powder Recommendations For Picky Eaters</div>
+
+  <div class="prec">
+    <div class="prec-hdr"><div class="prec-name">Dymatize ISO100 — Chocolate Fudge</div><div class="prec-rank">TRY FIRST</div></div>
+    <div class="prec-body"><strong>Why it's perfect for you:</strong> This is consistently rated the best-tasting protein powder for people who are picky or new to protein shakes. The chocolate fudge flavor tastes like chocolate milk — not artificial, not chalky. It mixes completely smooth in water or milk with just a spoon. No blender needed. 25g protein per serving. Available at Walmart, Target, GNC, and Amazon. ~$35 for a medium tub.</div>
+  </div>
+
+  <div class="prec">
+    <div class="prec-hdr"><div class="prec-name">Ghost Whey — Vanilla Milkshake</div><div class="prec-rank">IF YOU PREFER VANILLA</div></div>
+    <div class="prec-body"><strong>Why it's perfect for you:</strong> If you're not a huge chocolate person, Ghost Vanilla Milkshake tastes exactly like a vanilla milkshake — thick, sweet, creamy. Mixes well in milk especially. 25g protein. No weird aftertaste. Available at GNC, Vitamin Shoppe, and online. ~$45 for a tub but worth it if you'll actually drink it every day.</div>
+  </div>
+
+  <div class="prec">
+    <div class="prec-hdr"><div class="prec-name">Optimum Nutrition Gold Standard — Double Chocolate</div><div class="prec-rank">BUDGET PICK</div></div>
+    <div class="prec-body"><strong>Why it's perfect for you:</strong> The most affordable option that still tastes great. Double chocolate flavor is smooth and not too sweet. 24g protein. Sold everywhere — Walmart, Target, Sam's Club, Costco, Amazon. ~$30–35. This is the one to buy if you want to try protein powder without spending a lot first.</div>
+  </div>
+
+  <div class="tip"><strong>💡 Pro tip:</strong> Buy the smallest size first (mini tub or individual packets if available) to test the flavor before committing to a big tub. GNC sometimes sells individual sample packets.</div>
+
+  <hr class="divider">
+
+  <div class="edrink">
+    <div class="edrink-title">⚡ Alani Orange + Bloom Raspberry Lemonade <span class="badge b-ok">KEEP WITH RULES</span></div>
+    <div class="edrink-body">Good news — both drinks are zero sugar and only about 10 calories per can, so they do not hurt your fat loss at all. The ingredient to watch is caffeine: each Alani contains 200mg — more than double a regular cup of coffee. They're fine to keep with these rules:
+      <div class="erule">
+        ✦ Maximum 1 can per day — never 2<br>
+        ✦ Nothing else caffeinated same day (no coffee, no OxyShred, no pre-workout)<br>
+        ✦ Drink before noon or before your workout — never after 2pm<br>
+        ✦ Caffeine after 2pm hurts your sleep, and sleep is when your glutes grow<br>
+        ✦ On days you take OxyShred — skip the Alani/Bloom entirely. Pick one.<br>
+        ✦ Best use: Alani/Bloom on non-OxyShred days as your pre-workout energy
+      </div>
+    </div>
+  </div>
+
+  <div class="edrink" style="border-top-color:var(--terracotta);">
+    <div class="edrink-title">🟢 OxyShred by EHP Labs <span class="badge b-yes">RECOMMENDED</span></div>
+    <div class="edrink-body">This is what you were asking about — and it's actually one of the best fat burners on the market. A real clinical study showed it increased calorie burn at rest by 121–166 extra calories per day for up to 3 hours after taking it. Key ingredients include Acetyl L-Carnitine (transports fat into your cells to be burned as fuel), Green Coffee Bean Extract (may reduce carb absorption), and 150mg caffeine — actually LESS than your Alani can, so it's gentler on your system.<br><br>
+    People love it for: clean energy without the jitters, reduced cravings, better mood during training, and real gradual fat loss support over time. The Kiwi Strawberry and Guava Paradise flavors are both highly rated.<br><br>
+    <strong>What OxyShred will NOT do:</strong> build your glutes. That's what your creatine + lifting is for. OxyShred supports fat loss and energy — it's a tool that complements your plan, not a replacement for the work.
+      <div class="erule">
+        ✦ Training days: 1 scoop in 10oz cold water, 10–15 min before workout<br>
+        ✦ Rest days: 1 scoop first thing in morning on empty stomach<br>
+        ✦ Never after 5pm — it will ruin your sleep<br>
+        ✦ Never on the same day as Alani Orange or Bloom — too much caffeine<br>
+        ✦ Take a 1-week break after each tub (every 4–6 weeks) to reset tolerance<br>
+        ✦ Available at GNC, Amazon, Vitamin Shoppe (~$60/tub · 60 servings)
+      </div>
+    </div>
+  </div>
+
+  <div class="card card-deep">
+    <div class="card-title">🌟 Glutamine <span class="badge b-ok">OPTIONAL ADD-ON</span></div>
+    <div class="card-body">Helps reduce soreness and speed recovery. As a mom of 5 running a business, less soreness = easier to stay consistent with the gym. Not essential but a nice addition once you have creatine and protein handled.</div>
+    <div class="card-note">📌 5g mixed into water or protein shake after workouts.</div>
+  </div>
+
+  <div class="tip"><strong>💡 Your actual starter stack:</strong> Creatine Monohydrate + Protein Powder. That's it. Start there. Those two alone, with this workout and meal plan, will transform your body in 12 weeks.</div>
+
+  <hr class="divider">
+  <div class="sec-title" style="font-size:17px;margin-bottom:6px;">🥤 How to Pick Your Protein — The Picky Eater Guide</div>
+  <p class="sec-sub" style="margin-bottom:12px;">You already know chocolate is not really your thing. That's important to know before spending $40 on a tub. Here's exactly how to find a flavor you'll actually look forward to.</p>
+
+  <div class="card card-pink">
+    <div class="card-title">🧪 Try Before You Buy — Start Here</div>
+    <div class="card-body"><strong>Fairlife Core Power Protein Shakes</strong> — pre-made bottles, already mixed, no powder needed. Taste like a real milkshake, not a supplement at all. Sold at Walmart, Target, and most grocery stores for $3–4 per bottle. This is your zero-risk starting point.<br><br>
+    Grab ONE bottle of <strong>Vanilla</strong> first. Try it cold. If you like it, vanilla is your direction. If not, try <strong>Strawberry Banana</strong> next. For about $6–8 total you will know exactly what flavor profile works for you before spending $40 on a full tub of powder.</div>
+    <div class="card-note">📌 GNC and Vitamin Shoppe in the Kissimmee/St. Cloud area also sell individual sample packets for $3–5 each — call ahead and ask before driving over.</div>
+  </div>
+
+  <div class="card card-gold">
+    <div class="card-title">🎂 Best Non-Chocolate Flavors for Picky Eaters</div>
+    <div class="card-body">
+      <ul class="cklist">
+        <li><strong>Dymatize ISO100 — Fruity Pebbles:</strong> Tastes exactly like Fruity Pebbles cereal in milk. Light, fruity, not heavy or supplement-tasting at all.</li>
+        <li><strong>Dymatize ISO100 — Birthday Cake:</strong> Tastes like vanilla cake batter. Sweet, mild, very easy for someone new to protein shakes.</li>
+        <li><strong>Ghost Whey — Nilla Wafer:</strong> Ghost partners with real cookie brands. Nilla Wafer mixed in regular milk tastes like a vanilla wafer cookie shake. Very light and smooth.</li>
+        <li><strong>Ghost Whey — Chips Ahoy:</strong> Cookie flavored, not heavy chocolate. Creamy and mild when mixed with milk.</li>
+        <li><strong>Optimum Nutrition Gold Standard — Strawberry:</strong> Mixed with regular milk this genuinely tastes like a strawberry milkshake. Beginner-friendly and sold at Walmart and Target.</li>
+        <li><strong>Optimum Nutrition Gold Standard — Vanilla Ice Cream:</strong> Clean, classic, not too sweet. Very versatile — drink it plain with milk or add a whole banana to it.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-green">
+    <div class="card-title">🥛 What to Mix It With</div>
+    <div class="card-body">
+      <strong>Regular cow's milk (recommended for you):</strong> Makes it creamier, thicker, and tastier — more like a real drink. Adds 8g of bonus protein per cup on top of the powder.<br><br>
+      <strong>Water:</strong> Thinner and lighter. Fine for quick convenience but milk tastes significantly better and gives more protein.<br><br>
+      <strong>Always drink it cold</strong> — protein shakes taste dramatically better cold than at room temperature. Don't let it sit out.
+    </div>
+    <div class="card-note">📌 A shaker bottle ($8–10 at Walmart or Amazon) makes mixing effortless — add milk, add powder, shake 10 seconds. No blender needed.</div>
+  </div>
+</div>
+
+<!-- ===== WORKOUT ===== -->
+<div id="workout" class="tab">
+  <div class="sec-title">Your Weekly Plan</div>
+  <p class="sec-sub">Glute growth is priority #1. Fat loss and toning follow automatically. Every lifting session is glute-focused. Active recovery days burn extra calories without fighting your muscle growth.</p>
+
+  <div class="card card-pink" style="margin-bottom:14px;">
+    <div class="card-title">📅 Your Full Week — At a Glance</div>
+    <div class="card-body">
+      <ul class="cklist">
+        <li><strong>Monday</strong> — 🏋️ Lift: Heavy Glutes + Legs (Gym)</li>
+        <li><strong>Tuesday</strong> — 🚴 Run OR Bike · 20–25 min easy pace · your choice that day</li>
+        <li><strong>Wednesday</strong> — 🏋️ Lift: Glute Isolation + Core (Home)</li>
+        <li><strong>Thursday</strong> — 😴 Rest day · full recovery · (Pilates optional if you have spare time &amp; budget)</li>
+        <li><strong>Friday</strong> — 🏋️ Lift: Power Day (Gym)</li>
+        <li><strong>Saturday</strong> — 🚴 Run OR Bike · 20–25 min easy pace · your choice that day</li>
+        <li><strong>Sunday</strong> — 😴 Full rest · do nothing · let your body rebuild and grow</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip" style="margin-bottom:14px;"><strong>🏃 Running vs Bike — your choice each active recovery day:</strong> Both are equally good for fat loss. Running outside burns slightly more calories and gives you a mental reset that the bike can't match — especially helpful when life is stressful. Bike is perfect for days you don't want to leave home. Either way: <strong>track TIME not miles.</strong> On the bike, ignore the mile counter — resistance changes everything. Just ride for 20–25 minutes. For running, set a timer on your phone and go. Easy conversational pace only. If you can't talk while running, slow down.</div>
+
+  <div class="tip" style="margin-bottom:14px;"><strong>🧘 Pilates — spare time bonus only:</strong> Pilates won't grow your glutes significantly but it builds deep core stability and the mind-body connection that actually makes your glute exercises more effective. If you ever have spare time and budget, go. But your gym + home plan comes first, always. Pilates is never a replacement for a lifting day.</div>
+
+  <div class="tip" style="margin-bottom:14px;"><strong>😌 On soreness:</strong> The first 2–3 weeks are the hardest. After that your body adapts and the soreness drops dramatically. Sunday and Thursday are your full recovery days — protect them.</div>
+
+  <div class="tip" style="margin-bottom:14px;"><strong>📈 Most Important Rule — Progressive Overload:</strong> Every 1–2 weeks, add a little more weight or 1 more rep. Your glutes ONLY grow when you keep challenging them. Write your weights down after every single session. This is what separates women who transform from women who plateau.</div>
+
+  <div class="day-card">
+    <div class="day-hdr">
+      <div class="day-name">Day 1 — Monday</div>
+      <div class="day-focus">🍑 Heavy Glutes + Legs · GYM</div>
+    </div>
+    <div class="ex-list">
+      <div class="ex"><div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Barbell Hip Thrust</div><div class="ex-detail">THE #1 glute builder. Back against a bench, bar across your hips, drive up and SQUEEZE for 1 second at the top. Ask gym staff to show you the setup on your first day — don't be shy.</div></div><div class="ex-sets">4 × 10–12</div></div>
+      <div class="ex"><div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Sumo Squat (Barbell or Dumbbells)</div><div class="ex-detail">Wide stance, toes out 45°. Goes deeper into glutes and inner thighs than regular squats. Drive through your heels, keep chest up.</div></div><div class="ex-sets">3 × 12</div></div>
+      <div class="ex"><div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Cable Kickback</div><div class="ex-detail">Ankle strap on cable machine. Kick one leg straight back and up slowly. Squeeze the glute hard at the top. No swinging — control every rep.</div></div><div class="ex-sets">3 × 15 / side</div></div>
+      <div class="ex"><div class="ex-num">4</div><div class="ex-info"><div class="ex-name">Leg Press — Feet High on Platform</div><div class="ex-detail">Placing feet high on the platform shifts all the work into your glutes and hamstrings instead of your quads. Go heavier than you think you can.</div></div><div class="ex-sets">3 × 12</div></div>
+      <div class="ex"><div class="ex-num">5</div><div class="ex-info"><div class="ex-name">Band Lateral Walks</div><div class="ex-detail">Band above knees, slight squat position, walk sideways 15 steps each direction. Creates the rounded "shelf" look from behind. Feel the burn in the outer glute.</div></div><div class="ex-sets">3 × 15 each way</div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-hdr">
+      <div class="day-name">Day 2 — Wednesday</div>
+      <div class="day-focus">🔥 Glute Isolation + Core · HOME</div>
+    </div>
+    <div class="ex-list">
+      <div class="ex"><div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Glute Bridge with Band</div><div class="ex-detail">Lie on your back, band above knees, feet flat on floor. Drive hips up and hold 2 seconds at top. Feel it in your GLUTES — if you feel it in your lower back, move your feet closer to your body.</div></div><div class="ex-sets">4 × 20</div></div>
+      <div class="ex"><div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Single-Leg Deadlift (10lb Weights)</div><div class="ex-detail">Stand on one leg, hinge forward with the weights hanging down, feel the stretch in your glute and hamstring, come back up squeezing hard. Amazing for the lower glute shape.</div></div><div class="ex-sets">3 × 10 / leg</div></div>
+      <div class="ex"><div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Donkey Kick with Band</div><div class="ex-detail">On all fours, band above knees, kick one leg straight back and up. Squeeze at the top. Keep core tight — don't arch your lower back.</div></div><div class="ex-sets">3 × 15 / side</div></div>
+      <div class="ex"><div class="ex-num">4</div><div class="ex-info"><div class="ex-name">Fire Hydrant with Band</div><div class="ex-detail">Still on all fours, lift one knee out to the side. Works the outer glute for that rounded shape. Slow and controlled — feel every rep.</div></div><div class="ex-sets">3 × 15 / side</div></div>
+      <div class="ex"><div class="ex-num">5</div><div class="ex-info"><div class="ex-name">Dead Bug (Core — Belly Safe)</div><div class="ex-detail">Lie on back, arms up, knees at 90°. Slowly lower opposite arm and leg toward the floor without touching, bring back up. Works your core deeply with zero pressure on your belly skin.</div></div><div class="ex-sets">3 × 10 / side</div></div>
+    </div>
+  </div>
+
+  <div class="day-card">
+    <div class="day-hdr">
+      <div class="day-name">Day 3 — Friday</div>
+      <div class="day-focus">💎 Power Day · GYM</div>
+    </div>
+    <div class="ex-list">
+      <div class="ex"><div class="ex-num">1</div><div class="ex-info"><div class="ex-name">Romanian Deadlift</div><div class="ex-detail">Best exercise for the lower glute and that hamstring curve. Keep bar close to your legs, hinge at hips, feel the stretch, drive up through heels. This builds the bottom curve of the glute.</div></div><div class="ex-sets">4 × 10</div></div>
+      <div class="ex"><div class="ex-num">2</div><div class="ex-info"><div class="ex-name">Smith Machine Hip Thrust</div><div class="ex-detail">Same as Day 1 but more stable — the Smith Machine holds the bar steady so you can fully focus on squeezing. Go heavier than Monday.</div></div><div class="ex-sets">4 × 10</div></div>
+      <div class="ex"><div class="ex-num">3</div><div class="ex-info"><div class="ex-name">Bulgarian Split Squat</div><div class="ex-detail">Rear foot on bench, front foot forward, lower down slowly. Hardest exercise here — start bodyweight only. Incredible for glutes and thighs together.</div></div><div class="ex-sets">3 × 8 / leg</div></div>
+      <div class="ex"><div class="ex-num">4</div><div class="ex-info"><div class="ex-name">Abductor Machine</div><div class="ex-detail">Push knees apart against resistance. Shapes the outer glute — that look from behind. Go heavy. You'll feel it immediately in the side of your glute.</div></div><div class="ex-sets">4 × 15</div></div>
+      <div class="ex"><div class="ex-num">5</div><div class="ex-info"><div class="ex-name">Walking Lunges</div><div class="ex-detail">Long stride forward, torso upright, feel it in your glutes not your knees. Add your 10lb weights once bodyweight feels easy.</div></div><div class="ex-sets">3 × 10 / leg</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MEALS ===== -->
+<div id="meals" class="tab">
+  <div class="sec-title">Your Meal Plan</div>
+  <p class="sec-sub">Built 100% around what YOU actually eat. Every meal uses your real foods, your seasonings (adobo, sazon, garlic, onion, Italian, lemon pepper), and nothing you hate. Aim for ~1,750–1,850 cal/day.</p>
+
+  <div class="tip" style="margin-bottom:14px;"><strong>🛒 Your weekly grocery list:</strong> Eggs, steak (sirloin/flank), ground beef (93/7), ground turkey, chicken breast, chicken thighs, shrimp, salmon, white rice, pasta, sweet potatoes, broccoli, asparagus, corn, carrots, cucumbers, apples, bananas, grapes, strawberries, oranges, shredded cheese, string cheese, butter, regular milk. That's your whole world — everything in this plan comes from this list.</div>
+
+  <div class="mtoggle">
+    <button class="active" onclick="showMeal('breakfast')">🌅 Breakfast</button>
+    <button onclick="showMeal('lunch')">☀️ Lunch</button>
+    <button onclick="showMeal('dinner')">🌙 Dinner</button>
+    <button onclick="showMeal('snacks')">🍎 Snacks</button>
+    <button onclick="showMeal('sample')">📋 Full Days</button>
+  </div>
+
+  <!-- BREAKFAST -->
+  <div id="breakfast" class="mview active">
+    <p class="sec-sub" style="margin-bottom:12px;">Pick any one each morning and rotate. All made with foods you eat.</p>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🍳 Scrambled Eggs + Sweet Potato</div><div class="mc-cal">~360 cal</div></div><div class="mc-body"><div class="mc-desc">3 scrambled eggs cooked in butter. ½ sweet potato diced and pan-fried with adobo and garlic powder. Simple, filling, and the sweet potato carbs will fuel your morning perfectly.</div><div class="macros"><span class="mp mp-p">P: 22g</span><span class="mp mp-c">C: 26g</span><span class="mp mp-f">F: 14g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🍳 Fried Eggs + Rice</div><div class="mc-cal">~380 cal</div></div><div class="mc-body"><div class="mc-desc">3 fried eggs in butter with sazon sprinkled on top. Served over ½ cup white rice. Quick, tasty, and feels like a real meal. Add hot sauce if you like heat.</div><div class="macros"><span class="mp mp-p">P: 20g</span><span class="mp mp-c">C: 30g</span><span class="mp mp-f">F: 14g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥚 Cheesy Scrambled Eggs + Fruit</div><div class="mc-cal">~320 cal</div></div><div class="mc-body"><div class="mc-desc">3 eggs scrambled with shredded cheese mixed in at the end. Side of sliced strawberries or a whole banana. Fast, no-fuss breakfast that hits your protein early.</div><div class="macros"><span class="mp mp-p">P: 24g</span><span class="mp mp-c">C: 22g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥩 Steak &amp; Egg Breakfast</div><div class="mc-cal">~430 cal</div></div><div class="mc-body"><div class="mc-desc">3oz leftover steak sliced thin + 2 fried eggs. Sprinkle adobo or sazon. Add ½ cup rice on workout mornings. High protein power breakfast — keeps you full for hours.</div><div class="macros"><span class="mp mp-p">P: 38g</span><span class="mp mp-c">C: 20g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🍳 Ground Turkey Egg Scramble</div><div class="mc-cal">~390 cal</div></div><div class="mc-body"><div class="mc-desc">3oz cooked ground turkey + 2 scrambled eggs mixed together in the pan with shredded cheese. Season with sazon and onion powder. Great for using leftover turkey from dinner.</div><div class="macros"><span class="mp mp-p">P: 36g</span><span class="mp mp-c">C: 4g</span><span class="mp mp-f">F: 18g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥚 Hard Boiled Eggs + Banana + Cheese</div><div class="mc-cal">~290 cal</div></div><div class="mc-body"><div class="mc-desc">3 hard boiled eggs + 1 whole banana + 1–2 string cheese sticks. Zero cooking required. Prep eggs Sunday night and grab and go all week. Perfect for busy mornings.</div><div class="macros"><span class="mp mp-p">P: 26g</span><span class="mp mp-c">C: 28g</span><span class="mp mp-f">F: 12g</span></div></div></div>
+  </div>
+
+  <!-- LUNCH -->
+  <div id="lunch" class="mview">
+    <p class="sec-sub" style="margin-bottom:12px;">Your biggest protein meal of the day. All seasoned with your spices — adobo, sazon, garlic, Italian, lemon pepper.</p>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🥩 Steak + Broccoli + Rice</div><div class="mc-cal">~520 cal</div></div><div class="mc-body"><div class="mc-desc">6oz sirloin or flank steak seasoned with adobo and garlic powder, cooked in butter. 1 cup steamed broccoli with butter and salt. ½ cup white rice. Your favorite and it's literally perfect for your goals.</div><div class="macros"><span class="mp mp-p">P: 46g</span><span class="mp mp-c">C: 32g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🍗 Chicken Breast + Asparagus + Rice</div><div class="mc-cal">~480 cal</div></div><div class="mc-body"><div class="mc-desc">6oz chicken breast seasoned with lemon pepper, garlic powder, and Italian seasoning. Baked at 400° for 22 min or grilled. Roasted asparagus with olive oil and salt. ½ cup white rice.</div><div class="macros"><span class="mp mp-p">P: 50g</span><span class="mp mp-c">C: 30g</span><span class="mp mp-f">F: 10g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🍝 Ground Beef Pasta</div><div class="mc-cal">~540 cal</div></div><div class="mc-body"><div class="mc-desc">5oz lean ground beef (93/7) cooked with garlic powder, onion powder, and Italian seasoning. Mix in 1 cup cooked pasta with a little butter. Add shredded cheese on top. Comfort food that actually hits your macros.</div><div class="macros"><span class="mp mp-p">P: 42g</span><span class="mp mp-c">C: 46g</span><span class="mp mp-f">F: 14g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🍤 Shrimp + Rice + Corn</div><div class="mc-cal">~460 cal</div></div><div class="mc-body"><div class="mc-desc">6oz shrimp seasoned with sazon, garlic powder, and lemon pepper — cooked in butter 2 min per side. ½ cup white rice. ½ cup corn (canned or frozen, drained). Quick 15-minute meal that feels like a treat.</div><div class="macros"><span class="mp mp-p">P: 38g</span><span class="mp mp-c">C: 42g</span><span class="mp mp-f">F: 8g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🐟 Baked Salmon + Asparagus + Rice</div><div class="mc-cal">~510 cal</div></div><div class="mc-body"><div class="mc-desc">6oz salmon fillet baked with garlic powder, lemon pepper, and butter at 400° for 12–14 min. Roasted asparagus on the same pan. ½ cup white rice. Salmon is incredibly high in protein AND healthy fats that support your hormones and curves.</div><div class="macros"><span class="mp mp-p">P: 44g</span><span class="mp mp-c">C: 28g</span><span class="mp mp-f">F: 18g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🍗 Chicken Thighs + Broccoli + Sweet Potato</div><div class="mc-cal">~530 cal</div></div><div class="mc-body"><div class="mc-desc">2 chicken thighs baked with adobo, garlic, and butter. 1 cup broccoli. ½ medium sweet potato. One pan — prep everything, set a timer, walk away. Great for meal prepping Sunday.</div><div class="macros"><span class="mp mp-p">P: 44g</span><span class="mp mp-c">C: 34g</span><span class="mp mp-f">F: 18g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🦃 Ground Turkey Rice Bowl</div><div class="mc-cal">~470 cal</div></div><div class="mc-body"><div class="mc-desc">5oz ground turkey cooked with sazon, garlic powder, and onion powder. Served over ½ cup white rice with corn and shredded cheese on top. Budget-friendly and delicious.</div><div class="macros"><span class="mp mp-p">P: 44g</span><span class="mp mp-c">C: 36g</span><span class="mp mp-f">F: 10g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🫓 Pita Steak Wrap</div><div class="mc-cal">~500 cal</div></div><div class="mc-body"><div class="mc-desc">1 pita bread filled with 5oz sliced steak, shredded cheese, sliced avocado, and cucumber slices. Season the steak with adobo and garlic powder. Protein from steak, healthy fats from avocado, carbs from pita. Feels like a restaurant lunch.</div><div class="macros"><span class="mp mp-p">P: 40g</span><span class="mp mp-c">C: 34g</span><span class="mp mp-f">F: 18g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🥑 Shrimp + Avocado + Rice Bowl</div><div class="mc-cal">~490 cal</div></div><div class="mc-body"><div class="mc-desc">6oz shrimp cooked in butter with sazon and lemon pepper. Served over ½ cup white rice with ½ avocado sliced on the side. Shrimp is lean protein, avocado gives you the healthy fats your hormones need, rice gives you workout fuel.</div><div class="macros"><span class="mp mp-p">P: 38g</span><span class="mp mp-c">C: 32g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🫓 Pita Chicken + Avocado</div><div class="mc-cal">~480 cal</div></div><div class="mc-body"><div class="mc-desc">1 pita toasted, filled with 5oz grilled chicken breast sliced thin, ½ avocado mashed lightly with garlic powder and salt (like a simple guacamole), and shredded cheese. Season chicken with lemon pepper and Italian seasoning.</div><div class="macros"><span class="mp mp-p">P: 44g</span><span class="mp mp-c">C: 32g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🐟 Tuna + Rice + Avocado Bowl</div><div class="mc-cal">~460 cal</div></div><div class="mc-body"><div class="mc-desc">1 can tuna (drained) mixed with a tiny drizzle of mayo and garlic powder. Served over ½ cup white rice with ½ avocado sliced on the side and corn. Exactly like the rice and tuna bowls you saved on TikTok — one of the leanest, highest-protein meals you can make in under 5 minutes.</div><div class="macros"><span class="mp mp-p">P: 42g</span><span class="mp mp-c">C: 34g</span><span class="mp mp-f">F: 12g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🌶️ Ground Beef + Peppers + Rice</div><div class="mc-cal">~510 cal</div></div><div class="mc-body"><div class="mc-desc">5oz ground beef cooked with diced red peppers, green peppers, and red onion — exactly like the Instagram reel you saved. Season with sazon, garlic powder, and onion powder. Serve over ½ cup white rice. The peppers add volume, color, vitamins, and flavor without adding many calories at all.</div><div class="macros"><span class="mp mp-p">P: 40g</span><span class="mp mp-c">C: 34g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🍠 Chicken Fajita Loaded Sweet Potato</div><div class="mc-cal">~480 cal</div></div><div class="mc-body"><div class="mc-desc">1 large sweet potato baked at 400° for 45 min. Cook 5oz chicken breast sliced thin with red peppers, green peppers, and red onion with adobo and garlic powder. Split the sweet potato open, stuff with the chicken fajita mix, top with shredded cheese and ½ avocado. Exactly what you saved on Reels.</div><div class="macros"><span class="mp mp-p">P: 44g</span><span class="mp mp-c">C: 42g</span><span class="mp mp-f">F: 12g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🥗 Caesar Salad + Grilled Chicken</div><div class="mc-cal">~430 cal</div></div><div class="mc-body"><div class="mc-desc">Romaine lettuce, shredded parmesan, 6oz grilled chicken breast sliced on top. Drizzle with 2 tablespoons of Caesar dressing — not more. The dressing is the key: 2 tbsp = totally fine and delicious. Half a cup = where the calories pile up fast.</div><div class="macros"><span class="mp mp-p">P: 48g</span><span class="mp mp-c">C: 10g</span><span class="mp mp-f">F: 18g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr pink-h"><div class="mc-title">🐟 Shrimp + Corn Mash Bowl</div><div class="mc-cal">~470 cal</div></div><div class="mc-body"><div class="mc-desc">Inspired by the shrimp over mashed corn you saved — cook 6oz shrimp in butter with sazon and lemon pepper. Serve over mashed sweet potato or mashed corn (canned corn blended with a little butter and garlic). Add sliced avocado on the side.</div><div class="macros"><span class="mp mp-p">P: 38g</span><span class="mp mp-c">C: 36g</span><span class="mp mp-f">F: 14g</span></div></div></div>
+  </div>
+
+  <!-- DINNER -->
+  <div id="dinner" class="mview">
+    <p class="sec-sub" style="margin-bottom:12px;">Lighter than lunch but still protein-heavy. Cook extra — bring it to lunch tomorrow.</p>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🥩 Pan-Seared Steak + Asparagus</div><div class="mc-cal">~440 cal</div></div><div class="mc-body"><div class="mc-desc">5oz steak cooked in a hot pan with butter, garlic, and adobo. Roasted asparagus on the side. On workout days add ⅓ cup rice. On rest days skip the rice — protein and fat are enough.</div><div class="macros"><span class="mp mp-p">P: 40g</span><span class="mp mp-c">C: 6g</span><span class="mp mp-f">F: 22g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🍤 Garlic Butter Shrimp + Pasta</div><div class="mc-cal">~500 cal</div></div><div class="mc-body"><div class="mc-desc">6oz shrimp sautéed in garlic butter with Italian seasoning. Toss with 1 cup cooked pasta and a little of the butter sauce. Top with shredded cheese. This feels like a restaurant meal and takes 15 minutes.</div><div class="macros"><span class="mp mp-p">P: 38g</span><span class="mp mp-c">C: 44g</span><span class="mp mp-f">F: 12g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🍗 Lemon Pepper Chicken + Broccoli</div><div class="mc-cal">~400 cal</div></div><div class="mc-body"><div class="mc-desc">6oz chicken breast pounded thin, cooked in a pan with butter, lemon pepper, and garlic powder. 1½ cups steamed broccoli with butter. Light, flavorful, and the whole family will eat it.</div><div class="macros"><span class="mp mp-p">P: 50g</span><span class="mp mp-c">C: 8g</span><span class="mp mp-f">F: 14g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🐟 Salmon + Carrots + Rice</div><div class="mc-cal">~490 cal</div></div><div class="mc-body"><div class="mc-desc">5oz baked salmon with lemon pepper and butter. Roasted carrots with garlic powder and a drizzle of butter. ⅓ cup white rice. Salmon twice a week is great for your skin, hormones, and overall body composition.</div><div class="macros"><span class="mp mp-p">P: 38g</span><span class="mp mp-c">C: 26g</span><span class="mp mp-f">F: 18g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🍝 Ground Turkey Pasta Bake</div><div class="mc-cal">~520 cal</div></div><div class="mc-body"><div class="mc-desc">5oz ground turkey cooked with sazon and garlic, mixed with 1 cup pasta and shredded cheese. Top with more cheese and broil 3 min until bubbly. Kids will eat this too — family win.</div><div class="macros"><span class="mp mp-p">P: 44g</span><span class="mp mp-c">C: 44g</span><span class="mp mp-f">F: 12g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🥩 Ground Beef + Egg Scramble</div><div class="mc-cal">~420 cal</div></div><div class="mc-body"><div class="mc-desc">4oz ground beef cooked down, crack 2 eggs right into the pan, scramble everything together with shredded cheese and sazon. 10-minute dinner for exhausted nights when you cannot be bothered to cook.</div><div class="macros"><span class="mp mp-p">P: 40g</span><span class="mp mp-c">C: 3g</span><span class="mp mp-f">F: 22g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🍗 Sheet Pan Everything</div><div class="mc-cal">~460 cal</div></div><div class="mc-body"><div class="mc-desc">Chicken thighs, broccoli, and diced sweet potato on one sheet pan. Drizzle with butter, season with adobo and garlic powder. Bake at 400° for 30–35 min. One pan, one cleanup, feeds the whole family.</div><div class="macros"><span class="mp mp-p">P: 40g</span><span class="mp mp-c">C: 28g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🫓 Pita Shrimp Tacos</div><div class="mc-cal">~450 cal</div></div><div class="mc-body"><div class="mc-desc">Cut 2 pita breads in half to make 4 mini pockets. Fill with 6oz shrimp cooked in butter and sazon, shredded cheese, and sliced cucumber. A fun dinner that feels different from the usual plate — great for nights when you want something that doesn't feel like "diet food."</div><div class="macros"><span class="mp mp-p">P: 36g</span><span class="mp mp-c">C: 36g</span><span class="mp mp-f">F: 12g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🥑 Steak + Avocado + Asparagus</div><div class="mc-cal">~480 cal</div></div><div class="mc-body"><div class="mc-desc">5oz steak cooked in butter with adobo. ½ avocado sliced on the side with a little salt. Roasted asparagus. No rice needed — the avocado gives you satisfying healthy fats that keep you full all evening. One of the cleanest, most nutritious dinners on this plan.</div><div class="macros"><span class="mp mp-p">P: 40g</span><span class="mp mp-c">C: 8g</span><span class="mp mp-f">F: 28g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🐟 Meal Prep Salmon + Sweet Potato + Broccoli</div><div class="mc-cal">~500 cal</div></div><div class="mc-body"><div class="mc-desc">Exactly what you saved on TikTok. Cook 6oz salmon fillets with garlic powder and lemon pepper. Roast sweet potato slices and broccoli on the same pan at 400° for 25 min. Divide into glass containers. Makes 4–5 meals at once. Sunday meal prep = the whole week handled.</div><div class="macros"><span class="mp mp-p">P: 42g</span><span class="mp mp-c">C: 30g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr deep-h"><div class="mc-title">🌶️ Ground Beef Pepper Bowl (Dinner Version)</div><div class="mc-cal">~440 cal</div></div><div class="mc-body"><div class="mc-desc">5oz ground beef with diced red peppers, green peppers, red onion, and carrots cooked in sazon and garlic powder. Skip the rice at dinner — serve over a bed of broccoli instead or eat it straight from the pan with shredded cheese on top. Low carb, high protein, incredibly satisfying.</div><div class="macros"><span class="mp mp-p">P: 40g</span><span class="mp mp-c">C: 14g</span><span class="mp mp-f">F: 18g</span></div></div></div>
+  </div>
+
+  <!-- SNACKS -->
+  <div id="snacks" class="mview">
+    <p class="sec-sub" style="margin-bottom:12px;">Have 1–2 snacks per day. Focus on protein. These all use foods you already eat.</p>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥤 Protein Shake + Creatine</div><div class="mc-cal">~160–200 cal</div></div><div class="mc-body"><div class="mc-desc">1 scoop protein powder + 5g creatine stirred into regular milk or water. Milk makes it creamier and adds extra protein. This is your most important daily snack — hits 27g protein instantly.</div><div class="macros"><span class="mp mp-p">P: 27–35g</span><span class="mp mp-c">C: 10g</span><span class="mp mp-f">F: 3g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🧀 String Cheese + Apple</div><div class="mc-cal">~200 cal</div></div><div class="mc-body"><div class="mc-desc">2 sticks string cheese + 1 whole apple. Sweet and salty, zero prep, completely portable. Perfect grab-and-go snack for busy mom days.</div><div class="macros"><span class="mp mp-p">P: 14g</span><span class="mp mp-c">C: 22g</span><span class="mp mp-f">F: 8g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥚 Hard Boiled Eggs</div><div class="mc-cal">~140 cal</div></div><div class="mc-body"><div class="mc-desc">2–3 hard boiled eggs with salt. Boil a full batch on Sunday — they keep in the fridge all week. Quickest high-protein snack that exists.</div><div class="macros"><span class="mp mp-p">P: 12–18g</span><span class="mp mp-c">C: 1g</span><span class="mp mp-f">F: 10g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🍓 Strawberries + Shredded Cheese</div><div class="mc-cal">~160 cal</div></div><div class="mc-body"><div class="mc-desc">1 cup fresh strawberries + ¼ cup shredded cheddar. Sweet fruit + savory cheese is a surprisingly amazing combo. Fruit gives you energy, cheese gives you protein.</div><div class="macros"><span class="mp mp-p">P: 8g</span><span class="mp mp-c">C: 14g</span><span class="mp mp-f">F: 8g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🍊 Orange + String Cheese</div><div class="mc-cal">~170 cal</div></div><div class="mc-body"><div class="mc-desc">1 whole orange (peeled, just eat it) + 2 string cheese sticks. The vitamin C in the orange actually helps your body absorb protein better. Great mid-afternoon snack.</div><div class="macros"><span class="mp mp-p">P: 10g</span><span class="mp mp-c">C: 20g</span><span class="mp mp-f">F: 6g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🍚 Rice + Shredded Cheese + Egg</div><div class="mc-cal">~290 cal</div></div><div class="mc-body"><div class="mc-desc">½ cup leftover white rice, 1 fried egg on top, shredded cheese melted over it. Sazon on top. Perfect if you have a long gap between lunch and dinner.</div><div class="macros"><span class="mp mp-p">P: 16g</span><span class="mp mp-c">C: 30g</span><span class="mp mp-f">F: 12g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🍌 Banana + String Cheese</div><div class="mc-cal">~185 cal</div></div><div class="mc-body"><div class="mc-desc">1 whole banana + 2 string cheese sticks. Great pre-workout snack — the banana gives fast energy, cheese gives protein. Eat this 30–45 min before training.</div><div class="macros"><span class="mp mp-p">P: 9g</span><span class="mp mp-c">C: 28g</span><span class="mp mp-f">F: 6g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥚 Mini Egg Bites (Sunday Meal Prep)</div><div class="mc-cal">~200 cal for 2</div></div><div class="mc-body"><div class="mc-desc">Whisk 6 eggs with shredded cheese and diced carrots or corn. Pour into a muffin tin, season with adobo. Bake at 350° for 18 min. Makes 6 mini egg bites. Store in fridge, grab 2 anytime. Total game-changer for busy days.</div><div class="macros"><span class="mp mp-p">P: 16g</span><span class="mp mp-c">C: 4g</span><span class="mp mp-f">F: 12g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🍇 Grapes + Hard Boiled Eggs</div><div class="mc-cal">~180 cal</div></div><div class="mc-body"><div class="mc-desc">1 cup grapes + 2 hard boiled eggs. Cold grapes are refreshing and sweet, eggs give the protein. One of the easiest snack combos with zero prep if your eggs are already boiled.</div><div class="macros"><span class="mp mp-p">P: 12g</span><span class="mp mp-c">C: 26g</span><span class="mp mp-f">F: 10g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥑 Avocado + Hard Boiled Eggs</div><div class="mc-cal">~280 cal</div></div><div class="mc-body"><div class="mc-desc">½ avocado sliced with a little salt and garlic powder + 2 hard boiled eggs. Avocado is packed with healthy fats that support your hormones and help your body store fat in the right places — including your glutes.</div><div class="macros"><span class="mp mp-p">P: 14g</span><span class="mp mp-c">C: 8g</span><span class="mp mp-f">F: 20g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥑 Avocado + Shrimp Bowl</div><div class="mc-cal">~310 cal</div></div><div class="mc-body"><div class="mc-desc">½ avocado sliced + 4oz cooked cold shrimp seasoned with lemon pepper and sazon. You can eat this as a snack or a light lunch. Creamy, satisfying, and extremely high in protein and good fats. Great for hot Florida days.</div><div class="macros"><span class="mp mp-p">P: 26g</span><span class="mp mp-c">C: 8g</span><span class="mp mp-f">F: 16g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🫓 Pita + Shredded Cheese + Egg</div><div class="mc-cal">~320 cal</div></div><div class="mc-body"><div class="mc-desc">1 whole pita bread toasted, topped with shredded cheese melted on top and a fried egg. Season with adobo or garlic powder. Perfect as a pre-workout snack or quick breakfast alternative.</div><div class="macros"><span class="mp mp-p">P: 18g</span><span class="mp mp-c">C: 32g</span><span class="mp mp-f">F: 14g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🐟 Tuna + Corn + Pita Dip</div><div class="mc-cal">~280 cal</div></div><div class="mc-body"><div class="mc-desc">1 can tuna drained, mixed with corn, a tiny bit of mayo (1 tsp), and shredded cheese. Eat it with pita bread torn into pieces for dipping. High protein, filling, and done in under 5 minutes. A perfect afternoon snack or light lunch when you don't feel like cooking.</div><div class="macros"><span class="mp mp-p">P: 28g</span><span class="mp mp-c">C: 28g</span><span class="mp mp-f">F: 8g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🥗 Mini Caesar Salad</div><div class="mc-cal">~220 cal</div></div><div class="mc-body"><div class="mc-desc">Romaine lettuce with 2 tablespoons Caesar dressing and shredded parmesan. Add 2 hard boiled eggs on top for protein. The dressing rule: always measure 2 tablespoons — never eyeball Caesar or ranch or it adds up fast.</div><div class="macros"><span class="mp mp-p">P: 16g</span><span class="mp mp-c">C: 8g</span><span class="mp mp-f">F: 14g</span></div></div></div>
+    <div class="mc"><div class="mc-hdr gold-h"><div class="mc-title">🐔 Canned Chicken + Pita</div><div class="mc-cal">~290 cal</div></div><div class="mc-body"><div class="mc-desc">1 can chicken breast (drained), mixed with a tiny drizzle of ranch or mayo (1 tbsp max), garlic powder, and corn. Stuff into a pita or eat with pita on the side. Canned chicken is one of the most overlooked high-protein convenience foods — already cooked, zero prep, and hits 25–30g protein per can.</div><div class="macros"><span class="mp mp-p">P: 28g</span><span class="mp mp-c">C: 26g</span><span class="mp mp-f">F: 8g</span></div></div></div>
+  </div>
+
+  <!-- FULL SAMPLE DAYS -->
+  <div id="sample" class="mview">
+    <p class="sec-sub" style="margin-bottom:12px;">Exactly what a full day looks like — so you never have to guess.</p>
+
+    <div class="card card-pink" style="margin-bottom:8px;"><div class="card-title">📅 Sample Workout Day (~1,820 cal · 132g protein)</div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr gold-h"><div class="mc-title">7am · Breakfast</div><div class="mc-cal">Fried Eggs + Rice</div></div><div class="mc-body"><div class="mc-desc">3 fried eggs in butter + ½ cup rice + sazon</div><div class="macros"><span class="mp mp-p">P: 20g</span></div></div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr gold-h"><div class="mc-title">10am · Pre-Workout Snack</div><div class="mc-cal">Banana + String Cheese</div></div><div class="mc-body"><div class="mc-desc">Eat this 30–45 min before you train</div><div class="macros"><span class="mp mp-p">P: 9g</span></div></div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr pink-h"><div class="mc-title">12pm · Post-Workout</div><div class="mc-cal">Protein Shake + Creatine</div></div><div class="mc-body"><div class="mc-desc">RIGHT after training — muscle repair starts here</div><div class="macros"><span class="mp mp-p">P: 30g</span></div></div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr pink-h"><div class="mc-title">1:30pm · Lunch</div><div class="mc-cal">Steak + Broccoli + Rice</div></div><div class="mc-body"><div class="mc-desc">6oz steak + broccoli + ½ cup rice + adobo</div><div class="macros"><span class="mp mp-p">P: 46g</span></div></div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr gold-h"><div class="mc-title">4pm · Snack</div><div class="mc-cal">Hard Boiled Eggs x2 + Apple</div></div><div class="mc-body"><div class="mc-desc">Prepped Sunday — zero effort</div><div class="macros"><span class="mp mp-p">P: 14g</span></div></div></div>
+    <div class="mc" style="margin-bottom:20px;"><div class="mc-hdr deep-h"><div class="mc-title">7pm · Dinner</div><div class="mc-cal">Lemon Pepper Chicken + Broccoli + ⅓ cup rice</div></div><div class="mc-body"><div class="mc-desc">Workout day = add rice to dinner</div><div class="macros"><span class="mp mp-p">P: 50g</span></div></div></div>
+
+    <div class="card card-gold" style="margin-bottom:8px;"><div class="card-title">📅 Sample Rest Day (~1,660 cal · 120g protein)</div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr gold-h"><div class="mc-title">8am · Breakfast</div><div class="mc-cal">Cheesy Scrambled Eggs + Strawberries</div></div><div class="mc-body"><div class="mc-desc">3 eggs + shredded cheese + side of strawberries</div><div class="macros"><span class="mp mp-p">P: 24g</span></div></div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr gold-h"><div class="mc-title">11am · Snack</div><div class="mc-cal">Protein Shake + Creatine</div></div><div class="mc-body"><div class="mc-desc">Take creatine EVERY day — including rest days</div><div class="macros"><span class="mp mp-p">P: 30g</span></div></div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr pink-h"><div class="mc-title">1pm · Lunch</div><div class="mc-cal">Shrimp + Rice + Corn</div></div><div class="mc-body"><div class="mc-desc">6oz shrimp + sazon + ½ cup rice + corn</div><div class="macros"><span class="mp mp-p">P: 38g</span></div></div></div>
+    <div class="mc" style="margin-bottom:5px;"><div class="mc-hdr gold-h"><div class="mc-title">4pm · Snack</div><div class="mc-cal">Orange + String Cheese x2</div></div><div class="mc-body"><div class="mc-desc">Rest day — easy bike ride around now (20 min)</div><div class="macros"><span class="mp mp-p">P: 10g</span></div></div></div>
+    <div class="mc" style="margin-bottom:20px;"><div class="mc-hdr deep-h"><div class="mc-title">7pm · Dinner</div><div class="mc-cal">Pan-Seared Steak + Asparagus</div></div><div class="mc-body"><div class="mc-desc">5oz steak + asparagus. No rice tonight — rest day.</div><div class="macros"><span class="mp mp-p">P: 40g</span></div></div></div>
+
+    <div class="tip"><strong>💧 Water goal every single day:</strong> 80–100oz. More on workout days. Get a 40oz water bottle and fill it twice. Dehydration kills fat loss, slows muscle recovery, and makes you look flat. It's free and it works.</div>
+  </div>
+</div>
+
+<!-- ===== MACROS ===== -->
+<div id="macros" class="tab">
+  <div class="sec-title">Macros — Made Simple</div>
+  <p class="sec-sub">You don't need to become a nutrition expert. Here is everything you need to know, plain and simple.</p>
+
+  <div class="mgrid">
+    <div class="mitem"><div style="font-size:22px;margin-bottom:5px;">🥩</div><div class="mbig" style="color:var(--terracotta)">130g</div><div class="mlbl">Protein/day</div></div>
+    <div class="mitem"><div style="font-size:22px;margin-bottom:5px;">🍠</div><div class="mbig" style="color:var(--gold)">155g</div><div class="mlbl">Carbs/day</div></div>
+    <div class="mitem"><div style="font-size:22px;margin-bottom:5px;">🫒</div><div class="mbig" style="color:var(--brown-dark)">60g</div><div class="mlbl">Fats/day</div></div>
+  </div>
+
+  <div class="tip" style="margin-bottom:14px;"><strong>Total: ~1,750–1,850 calories/day.</strong> You burn roughly 2,100–2,200 daily. This mild deficit means you lose fat slowly and steadily without losing muscle or energy. This is not a crash diet — it's a lifestyle you can actually maintain.</div>
+
+  <div class="card card-pink">
+    <div class="card-title">🥩 Protein — Your Glutes' Building Material</div>
+    <div class="card-body">When you lift weights you create tiny tears in your muscle fibers. Protein repairs and rebuilds them bigger. No protein = no muscle growth, no matter how hard you train. 130g sounds like a lot but your plan hits it easily:<br><br>
+    Protein shake: 27–30g · 6oz steak: 44g · 3 eggs: 18g · 6oz chicken: 50g · 6oz shrimp: 36g · 6oz salmon: 40g<br><br>
+    You will hit 130g almost automatically if you follow this meal plan.</div>
+    <div class="card-note">📌 Best sources: Steak, ground beef, ground turkey, chicken, shrimp, salmon, eggs, protein powder, string cheese</div>
+  </div>
+
+  <div class="card card-gold">
+    <div class="card-title">🍠 Carbs — Your Workout Fuel</div>
+    <div class="card-body">Carbs are not the enemy. They power your hip thrusts, your cable kickbacks, your squats. When you eat white rice or sweet potato before training, those carbs become the energy that moves that weight. Cut carbs and you won't have energy to lift heavy — your glutes stop growing.<br><br>
+    Eat your rice, pasta, sweet potatoes, and fruit without guilt. They are working for you, not against you.</div>
+    <div class="card-note">📌 Best sources for you: White rice, pasta, sweet potatoes, corn, banana, apple, strawberries, orange, grapes</div>
+  </div>
+
+  <div class="card card-deep">
+    <div class="card-title">🫒 Fats — Your Hormones and Curves</div>
+    <div class="card-body">Healthy fats support the hormones that tell your body where to store fat — including your glutes. They keep you full longer, help with skin elasticity, and make your food taste amazing. Don't cut fat out. The butter you cook with, the egg yolks, the natural fat in steak — all good.</div>
+    <div class="card-note">📌 Best sources: Butter, egg yolks, natural fat in beef and salmon, shredded cheese</div>
+  </div>
+
+  <div class="card card-green">
+    <div class="card-title">📱 Track for 2 Weeks Only — MyFitnessPal (Free)</div>
+    <div class="card-body">Download it and log your food for just 2 weeks. You don't have to do it forever. But for the first 2 weeks it will show you exactly where your protein is falling short. Most women discover they're only hitting 50–60g when they need 130g. Log for 2 weeks, learn your numbers, then you'll know what to eat by feel.</div>
+  </div>
+
+  <div class="alert">
+    <h3>💧 Water Is Non-Negotiable</h3>
+    <p>Drink 80–100oz daily. More on workout days. Dehydration makes you look and feel flat, slows fat loss, slows muscle recovery, and spikes hunger cravings. Get a big 40oz water bottle and fill it twice a day. Free, easy, and it genuinely works.</p>
+  </div>
+</div>
+
+<!-- ===== TIMELINE ===== -->
+<div id="timeline" class="tab">
+  <div class="sec-title">Your 12-Week Transformation</div>
+  <p class="sec-sub">What to realistically expect each phase. Don't quit at week 3 — the results are coming. Your body is preparing.</p>
+
+  <div class="tline" style="margin-bottom:16px;">
+    <div class="titem"><div class="tdot tg">1</div><div><div class="ttitle">Weeks 1–2: Your Body Waking Up</div><div class="tdesc">You'll be sore — that's it working. Nothing visible in the mirror yet. Focus on learning every exercise right, hitting your protein, and taking creatine daily. You are laying the foundation.</div></div></div>
+    <div class="titem"><div class="tdot tp">2</div><div><div class="ttitle">Weeks 3–4: You Start to Feel Different</div><div class="tdesc">Soreness goes away. You start feeling your glutes activate during exercises — that deep burn IS the growth signal. More energy. Better sleep. Creatine is fully loaded. Clothes may start fitting slightly differently.</div></div></div>
+    <div class="titem"><div class="tdot td">3</div><div><div class="ttitle">Weeks 5–8: Other People Notice Before You Do</div><div class="tdesc">Friends and family say something before you see it yourself. Glutes are noticeably rounder and firmer. Fat loss becomes visible. You're lifting heavier weights. This is the most important phase — do not skip sessions.</div></div></div>
+    <div class="titem"><div class="tdot tg">4</div><div><div class="ttitle">Weeks 9–12: The Transformation</div><div class="tdesc">By week 12 with consistent effort, your body looks dramatically different. This is when you compare to your Day 1 photo and feel emotional. The women in those Instagram posts you sent? Same timeline. Same work. You can be them.</div></div></div>
+  </div>
+
+  <div class="card card-pink">
+    <div class="card-title">📸 Do These This Week — Day 1 Checklist</div>
+    <div class="card-body">
+      <ul class="cklist">
+        <li>Take a before photo — back view and side view, store privately</li>
+        <li>Measure your glutes with a tape measure — write it down</li>
+        <li>Get your gym membership</li>
+        <li>Order Creatine Monohydrate on Amazon (~$18, any brand)</li>
+        <li>Try Dymatize ISO100 Chocolate Fudge — buy the small tub first</li>
+        <li>Download MyFitnessPal and log food for the first 2 weeks</li>
+        <li>Boil a batch of eggs Sunday night — ready all week</li>
+        <li>Add Mon / Wed / Fri workouts to your calendar with reminders</li>
+        <li>Ask gym staff to show you hip thrust setup on Day 1</li>
+        <li>Start drinking 80oz+ of water starting today</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip"><strong>👑 J Empire Mindset:</strong> You are not starting from zero. You're starting with five kids, a business, a full life — and you're still showing up for yourself. That is the hardest part. The gym is easy compared to what you already do every single day.</div>
+</div>
+
+<!-- ===== FOOD WEIGHING ===== -->
+<div id="weighing" class="tab">
+  <div class="sec-title">Food Weighing — Do You Need To?</div>
+  <p class="sec-sub">You've seen people on Instagram weighing every gram of food. Here's the honest truth about whether you actually need to do that — and if so, exactly how it works.</p>
+
+  <div class="tip"><strong>Short answer for where you are right now:</strong> You do NOT need to weigh your food to start. Following the portion guidelines in this plan by eye is enough to get going and see real results. Weighing food is a more advanced tool — think of it as level 2. You can add it later once you've built the habit of eating right first.</div>
+
+  <div class="card card-pink">
+    <div class="card-title">⚖️ Should YOU Weigh Your Food?</div>
+    <div class="card-body">Here's when weighing food actually makes sense and when it doesn't:<br><br>
+    <strong>You DON'T need to weigh food if:</strong> You're just starting out, you're already making better food choices, and you're logging in MyFitnessPal using the cup/piece measurements already in the app. This is plenty for your first 8–12 weeks.<br><br>
+    <strong>Weighing DOES help when:</strong> You've been consistent for 6–8 weeks and your progress has slowed or stalled. At that point, eyeballing portions can drift — your "6oz of steak" has become 9oz without you realizing it. A food scale brings it back to accuracy.</div>
+  </div>
+
+  <div class="card card-gold">
+    <div class="card-title">🔢 How Food Weighing Actually Works</div>
+    <div class="card-body">
+      <ul class="cklist">
+        <li><strong>Buy a digital food scale:</strong> About $10–15 on Amazon or Walmart. It sits on your counter and measures in grams and ounces. You place your plate or bowl on it, press "tare" (zero it out), then add your food.</li>
+        <li><strong>Weigh protein raw, not cooked:</strong> Meat loses water when cooked so it weighs less after cooking. Always weigh your steak, chicken, shrimp, or ground beef BEFORE cooking for accurate numbers. 6oz raw = your target.</li>
+        <li><strong>Weigh rice and pasta cooked:</strong> These absorb water when cooked so they weigh MORE after cooking. Weigh them after cooking. ½ cup cooked rice = about 100g.</li>
+        <li><strong>Don't weigh vegetables:</strong> Broccoli, asparagus, carrots, cucumbers — don't stress about these. Eat as much as you want. They're too low in calories to matter.</li>
+        <li><strong>Don't weigh fruit:</strong> Same — a banana is a banana, an apple is an apple. No need.</li>
+        <li><strong>Use the tare button constantly:</strong> Tare means "zero out." Place your plate, press tare, add food, read the weight, press tare again, add the next food. You can weigh everything on one plate without mixing up numbers.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-deep">
+    <div class="card-title">📏 Your Visual Portion Guide — No Scale Needed</div>
+    <div class="card-body">Until you're ready to weigh, use your hand as a guide. This works surprisingly well:<br><br>
+      <ul class="cklist">
+        <li><strong>Protein (steak, chicken, shrimp, salmon):</strong> The size and thickness of your palm = about 4–6oz. One palm per meal.</li>
+        <li><strong>Rice or pasta:</strong> One cupped hand = about ½ cup cooked. One cupped hand per meal.</li>
+        <li><strong>Sweet potato:</strong> About the size of your fist = one medium sweet potato.</li>
+        <li><strong>Avocado:</strong> ½ avocado per serving — easy to measure visually.</li>
+        <li><strong>Butter or olive oil for cooking:</strong> About 1 tablespoon = the tip of your thumb.</li>
+        <li><strong>Shredded cheese:</strong> A small handful = about ¼ cup.</li>
+        <li><strong>Vegetables:</strong> Fill the rest of your plate — no measuring needed.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card card-green">
+    <div class="card-title">🥑 Avocado, Shrimp + Pita — Your New Foods Explained</div>
+    <div class="card-body">
+      <strong>🥑 Avocado:</strong> Packed with healthy fats that support hormone production — which directly affects where your body stores fat and how your glutes grow. Also incredibly filling, which helps with the calorie deficit. Portion = ½ avocado per serving.<br><br>
+      <strong>🍤 Shrimp:</strong> One of the leanest, highest-protein foods that exists — 6oz has about 36–38g of protein with very little fat or carbs. It cooks in 4 minutes. Season with sazon, lemon pepper, or adobo in butter.<br><br>
+      <strong>🫓 Pita Bread:</strong> A great carb option for your plan. Better than regular bread because it's denser, more filling, and holds together well. One whole pita = about 160–170 calories and 30g of carbs — perfect as a pre-workout energy source or a lunch wrap.<br><br>
+      <strong>🐟 Canned Tuna + Canned Chicken:</strong> Two of the most underrated high-protein convenience foods. Already cooked, zero prep, cheap. 1 can tuna = about 25–30g protein for under 150 calories. Mix with a tiny bit of mayo, corn, garlic powder — done in 2 minutes.<br><br>
+      <strong>🌶️ Red Peppers + Green Peppers:</strong> Add these to ground beef, chicken, or shrimp whenever you want. They add color, crunch, vitamins, and flavor — and they're so low in calories (about 25 calories per pepper) that they don't even count toward your totals.
+    </div>
+  </div>
+
+  <div class="card card-pink">
+    <div class="card-title">🥗 Caesar, Ranch + Mayo — The Real Rules</div>
+    <div class="card-body">You do NOT have to cut these out. You just have to measure them.<br><br>
+    <strong>Caesar Dressing:</strong> 2 tablespoons = about 150–160 calories and totally fine on this plan. Pour it by eye and you'll easily use 4–6 tablespoons without realizing it — that's 300–450 extra calories from dressing alone.<br><br>
+    <strong>Ranch Dressing:</strong> Same rule — 2 tablespoons measured, not poured. Great on salads, as a dip for carrots and cucumbers, or drizzled on chicken.<br><br>
+    <strong>Mayonnaise:</strong> 1 teaspoon in your tuna or canned chicken mix is completely fine. The problem is when people use mayo as a spread and go way over without noticing.<br><br>
+    <strong>The rule for all three:</strong> Measure it. Use a spoon. Never pour directly from the bottle. 2 tablespoons of Caesar = delicious and on plan. Pouring from the bottle = 450 extra calories you didn't count.
+    </div>
+    <div class="card-note">📌 Buy a set of measuring spoons ($3 at Walmart) and keep them on your counter. This one habit saves you hundreds of hidden calories every single week.</div>
+  </div>
+
+  <div class="alert">
+    <h3>📱 MyFitnessPal Makes This Easy</h3>
+    <p>When you log food in MyFitnessPal you don't need to know exact grams right away. Search "6oz chicken breast" or "½ cup white rice cooked" and it finds the entry. Scan barcodes on packaged items like string cheese, pita bread, or shredded cheese for instant accurate numbers. Use it for 2 weeks minimum — it will completely change how you understand your food.</p>
+  </div>
+
+  <div class="tip"><strong>💡 Bottom line:</strong> Start with your hand as a portion guide and log in MyFitnessPal for 2 weeks. If your progress stalls at weeks 6–8, then buy a $10 food scale and start weighing your protein. You don't need to do everything at once — build one habit at a time.</div>
+</div>
+
+<!-- ===== WEIGHT LOG ===== -->
+<div id="weightlog" class="tab">
+  <div class="sec-title">Your Weight Log</div>
+  <p class="sec-sub">Weigh yourself once a week — same day, same time, first thing in the morning before eating or drinking. Weekly is the right frequency. Daily weighing causes stress over normal hormonal water fluctuations that have nothing to do with fat loss.</p>
+
+  <div class="tip" style="margin-bottom:16px;"><strong>⚖️ Best time to weigh:</strong> Every Monday morning, right when you wake up, before eating or drinking anything, after using the bathroom. Write it here immediately. That's it — put the scale away until next Monday.</div>
+
+  <div id="wstats-section" style="display:none;">
+    <div class="wstats">
+      <div class="wstat-box"><div class="wstat-val" id="stat-start">—</div><div class="wstat-lbl">Start Weight</div></div>
+      <div class="wstat-box"><div class="wstat-val" id="stat-current">—</div><div class="wstat-lbl">Current</div></div>
+      <div class="wstat-box"><div class="wstat-val" id="stat-lost">—</div><div class="wstat-lbl">Total Change</div></div>
+    </div>
+  </div>
+
+  <div class="wlog-controls">
+    <input type="number" id="weight-input" placeholder="Enter weight (lbs)" step="0.1" min="50" max="500">
+    <input type="date" id="date-input">
+    <button class="wbtn" onclick="addEntry()">Log It</button>
+  </div>
+
+  <div id="wlog-list"></div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function showMeal(id) {
+  document.querySelectorAll('.mview').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.mtoggle button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+const dateInput = document.getElementById('date-input');
+const today = new Date();
+dateInput.value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+let entries = JSON.parse(localStorage.getItem('jempire-weight') || '[]');
+function saveEntries() { localStorage.setItem('jempire-weight', JSON.stringify(entries)); }
+function formatDate(dateStr) {
+  const [y,m,d] = dateStr.split('-');
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[parseInt(m)-1]} ${parseInt(d)}, ${y}`;
+}
+function addEntry() {
+  const wInput = document.getElementById('weight-input');
+  const dInput = document.getElementById('date-input');
+  const w = parseFloat(wInput.value);
+  const d = dInput.value;
+  if (!w || w < 50 || w > 500) { alert('Please enter a valid weight.'); return; }
+  if (!d) { alert('Please select a date.'); return; }
+  if (entries.find(e => e.date === d)) {
+    if (!confirm('You already have an entry for this date. Replace it?')) return;
+    entries = entries.filter(e => e.date !== d);
+  }
+  entries.push({date:d, weight:w});
+  entries.sort((a,b) => b.date.localeCompare(a.date));
+  saveEntries(); renderLog(); wInput.value = '';
+}
+function deleteEntry(date) {
+  if (!confirm('Delete this entry?')) return;
+  entries = entries.filter(e => e.date !== date);
+  saveEntries(); renderLog();
+}
+function renderLog() {
+  const list = document.getElementById('wlog-list');
+  const statsSection = document.getElementById('wstats-section');
+  if (entries.length === 0) {
+    statsSection.style.display = 'none';
+    list.innerHTML = `<div class="wempty"><div class="wemoji">⚖️</div>No entries yet.<br>Log your first weigh-in above to start tracking!</div>`;
+    return;
+  }
+  const sorted = [...entries].sort((a,b) => a.date.localeCompare(b.date));
+  const startW = sorted[0].weight;
+  const currentW = sorted[sorted.length-1].weight;
+  const diff = (currentW - startW).toFixed(1);
+  const diffStr = diff > 0 ? `+${diff}` : `${diff}`;
+  document.getElementById('stat-start').textContent = `${startW} lbs`;
+  document.getElementById('stat-current').textContent = `${currentW} lbs`;
+  const lostEl = document.getElementById('stat-lost');
+  lostEl.textContent = `${diffStr} lbs`;
+  lostEl.style.color = diff <= 0 ? 'var(--green-soft)' : 'var(--red)';
+  statsSection.style.display = 'block';
+  let html = '';
+  entries.forEach((entry, i) => {
+    const olderEntry = entries[i+1];
+    let changeHtml = '';
+    if (olderEntry) {
+      const chg = (entry.weight - olderEntry.weight).toFixed(1);
+      if (chg < 0) changeHtml = `<span class="wentry-change wchange-down">↓ ${Math.abs(chg)} lbs</span>`;
+      else if (chg > 0) changeHtml = `<span class="wentry-change wchange-up">↑ ${chg} lbs</span>`;
+      else changeHtml = `<span class="wentry-change wchange-same">→ no change</span>`;
+    } else {
+      changeHtml = `<span class="wentry-change wchange-same" style="font-size:10px;">Starting weight</span>`;
+    }
+    html += `<div class="wentry"><div class="wentry-left"><div class="wentry-date">${formatDate(entry.date)}</div><div class="wentry-weight">${entry.weight} <span style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:400;color:var(--brown-light)">lbs</span></div>${changeHtml}</div><button class="wbtn-del" onclick="deleteEntry('${entry.date}')">Delete</button></div>`;
+  });
+  list.innerHTML = html;
+}
+renderLog();
+</script>
+</body>
+</html>

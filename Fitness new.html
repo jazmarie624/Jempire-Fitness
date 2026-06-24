@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="J Empire Fitness">
+<title>J Empire Fitness Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --cream:#F5F0E8;--cream-dark:#EDE6D6;--terracotta:#C4714A;--terracotta-light:#D4876A;
+  --terracotta-pale:#F2E4DA;--rose-gold:#B8866A;--brown-dark:#3D2B1F;--brown-mid:#6B4C3B;
+  --brown-light:#9B7B6A;--gold:#C8A96E;--gold-pale:#F5EDD8;--white:#FDFAF5;
+  --shadow:rgba(61,43,31,0.12);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--brown-dark);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 0 60px;}
+.hero{width:100%;background:linear-gradient(160deg,var(--brown-dark) 0%,var(--brown-mid) 100%);padding:44px 24px 36px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(200,169,110,0.18),transparent 70%);}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(196,113,74,0.14),transparent 70%);}
+.hero-crown{font-size:36px;display:block;margin-bottom:14px;animation:float 3.5s ease-in-out infinite;position:relative;z-index:1;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+.hero h1{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:clamp(32px,9vw,48px);font-weight:700;line-height:1.1;letter-spacing:0.01em;position:relative;z-index:1;}
+.hero h1 em{font-style:italic;color:var(--white);}
+.hero-sub{color:var(--brown-light);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;margin-top:10px;position:relative;z-index:1;}
+.stats-strip{width:100%;background:var(--white);border-bottom:1px solid var(--cream-dark);display:flex;justify-content:center;overflow-x:auto;scrollbar-width:none;}
+.stats-strip::-webkit-scrollbar{display:none;}
+.stat-cell{flex-shrink:0;padding:13px 18px;text-align:center;border-right:1px solid var(--cream-dark);}
+.stat-cell:last-child{border-right:none;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--terracotta);display:block;}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:var(--brown-light);margin-top:2px;}
+.cards-wrap{width:100%;max-width:420px;padding:24px 18px 0;display:flex;flex-direction:column;gap:14px;}
+.hub-card{border-radius:18px;overflow:hidden;text-decoration:none;display:block;box-shadow:0 4px 20px var(--shadow);transition:transform 0.15s;}
+.hub-card:active{transform:scale(0.975);}
+.hub-card-header{padding:22px 22px 16px;position:relative;}
+.hub-card.plan .hub-card-header{background:linear-gradient(135deg,var(--brown-dark) 0%,var(--brown-mid) 100%);}
+.hub-card.tracker .hub-card-header{background:linear-gradient(135deg,var(--terracotta) 0%,var(--terracotta-light) 100%);}
+.card-icon-label{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.card-icon-label .icon{font-size:26px;position:relative;z-index:1;}
+.card-eyebrow{font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.5);font-weight:600;}
+.card-title{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:24px;font-weight:700;line-height:1.15;position:relative;z-index:1;}
+.hub-card.tracker .card-title{color:#fff;}
+.hub-card-body{background:var(--white);padding:16px 20px 18px;}
+.card-desc{font-size:13px;color:var(--brown-mid);line-height:1.65;margin-bottom:13px;}
+.card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.tag{background:var(--cream);border:1px solid var(--cream-dark);border-radius:20px;padding:4px 11px;font-size:10px;font-weight:600;color:var(--brown-mid);}
+.card-cta{display:block;text-align:center;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:700;transition:opacity 0.2s;}
+.hub-card.plan .card-cta{background:var(--brown-dark);color:var(--gold);}
+.hub-card.tracker .card-cta{background:var(--terracotta);color:#fff;}
+.section-label{width:100%;max-width:420px;padding:22px 18px 8px;font-size:9px;text-transform:uppercase;letter-spacing:0.12em;color:var(--brown-light);font-weight:600;}
+.quick-grid{width:100%;max-width:420px;padding:0 18px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.quick-btn{background:var(--white);border:1px solid var(--cream-dark);border-radius:14px;padding:16px 14px;text-align:center;text-decoration:none;display:block;box-shadow:0 2px 8px var(--shadow);}
+.quick-btn:active{background:var(--terracotta-pale);}
+.quick-icon{font-size:22px;display:block;margin-bottom:6px;}
+.quick-label{font-size:11px;font-weight:600;color:var(--brown-mid);}
+.motto{max-width:420px;width:100%;padding:28px 24px 0;text-align:center;}
+.motto p{font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;color:var(--brown-light);line-height:1.7;}
+.motto p span{display:block;margin-top:6px;font-style:normal;font-size:11px;text-transform:uppercase;letter-spacing:0.1em;color:var(--terracotta);}
+.install-banner{max-width:420px;width:100%;padding:20px 18px 0;}
+.install-inner{background:var(--gold-pale);border:1px solid rgba(200,169,110,0.4);border-radius:14px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;}
+.install-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.install-text strong{display:block;font-size:12px;color:var(--brown-dark);margin-bottom:3px;}
+.install-text span{font-size:11px;color:var(--brown-mid);line-height:1.55;}
+</style>
+</head>
+<body>
+<div class="hero">
+  <span class="hero-crown">👑</span>
+  <h1><em>J Empire</em><br>Fitness Hub</h1>
+  <p class="hero-sub">Jazmin Aguayo · Built for her goals</p>
+</div>
+<div class="stats-strip">
+  <div class="stat-cell"><span class="stat-val">169 lbs</span><div class="stat-lbl">Start Weight</div></div>
+  <div class="stat-cell"><span class="stat-val">5′5″</span><div class="stat-lbl">Height</div></div>
+  <div class="stat-cell"><span class="stat-val">12 Wks</span><div class="stat-lbl">Program</div></div>
+  <div class="stat-cell"><span class="stat-val">Goal 🍑</span><div class="stat-lbl">Glute Growth</div></div>
+</div>
+<div class="cards-wrap">
+  <a href="https://moonlit-kulfi-672320.netlify.app" class="hub-card plan">
+    <div class="hub-card-header">
+      <div class="card-icon-label"><span class="icon">📋</span><span class="card-eyebrow">Reference Guide</span></div>
+      <div class="card-title">J Empire Fitness Plan</div>
+    </div>
+    <div class="hub-card-body">
+      <p class="card-desc">Your complete 12-week program — goals, supplements, full workout breakdown, meal guide with your real foods, macros explained, 12-week timeline, food weighing guide, and your personal weight log.</p>
+      <div class="card-tags">
+        <span class="tag">💊 Supplements</span><span class="tag">🏋️ Workouts</span>
+        <span class="tag">🍽️ Meal Guide</span><span class="tag">📊 Macros</span>
+        <span class="tag">📅 Timeline</span><span class="tag">⚖️ Weight Log</span>
+      </div>
+      <span class="card-cta">Open Fitness Plan →</span>
+    </div>
+  </a>
+  <a href="https://steady-moxie-0500d7.netlify.app" class="hub-card tracker">
+    <div class="hub-card-header">
+      <div class="card-icon-label"><span class="icon">🥗</span><span class="card-eyebrow">Daily Tracker</span></div>
+      <div class="card-title">Nutrition Tracker</div>
+    </div>
+    <div class="hub-card-body">
+      <p class="card-desc">Log every meal, track calories and protein live, build custom plates, use smart food pairing, add your own foods, and monitor your water intake — all in one place.</p>
+      <div class="card-tags">
+        <span class="tag">📈 Live Macros</span><span class="tag">🍽️ Meal Log</span>
+        <span class="tag">🥗 Build Plate</span><span class="tag">🔀 Smart Pair</span>
+        <span class="tag">💧 Water</span><span class="tag">✏️ My Foods</span>
+      </div>
+      <span class="card-cta">Open Tracker →</span>
+    </div>
+  </a>
+</div>
+<div class="section-label">Quick Access</div>
+<div class="quick-grid">
+  <a href="https://steady-moxie-0500d7.netlify.app" class="quick-btn"><span class="quick-icon">📋</span><span class="quick-label">Today's Log</span></a>
+  <a href="https://moonlit-kulfi-672320.netlify.app" class="quick-btn"><span class="quick-icon">🏋️</span><span class="quick-label">Today's Workout</span></a>
+  <a href="https://moonlit-kulfi-672320.netlify.app" class="quick-btn"><span class="quick-icon">⚖️</span><span class="quick-label">Log My Weight</span></a>
+  <a href="https://steady-moxie-0500d7.netlify.app" class="quick-btn"><span class="quick-icon">🥗</span><span class="quick-label">Build a Plate</span></a>
+</div>
+<div class="motto">
+  <p>"You are not starting from zero.<br>You are starting with everything<br>you have already been through."<span>— J Empire Mindset 👑</span></p>
+</div>
+<div class="install-banner">
+  <div class="install-inner">
+    <div class="install-icon">📱</div>
+    <div class="install-text">
+      <strong>Save to Your Home Screen</strong>
+      <span>In Safari: tap Share → "Add to Home Screen" → name it "J Empire Fitness" → tap Add.</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

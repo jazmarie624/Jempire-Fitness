@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J Empire Nutrition Tracker</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --cream: #F5F0E8;
+    --cream-dark: #EDE6D6;
+    --terracotta: #C4714A;
+    --terracotta-light: #D4876A;
+    --terracotta-pale: #F2E4DA;
+    --rose-gold: #B8866A;
+    --rose-pale: #F0E4DC;
+    --brown-dark: #3D2B1F;
+    --brown-mid: #6B4C3B;
+    --brown-light: #9B7B6A;
+    --green-soft: #7A9E7E;
+    --green-pale: #E8F0E8;
+    --gold: #C8A96E;
+    --gold-pale: #F5EDD8;
+    --white: #FDFAF5;
+    --shadow: rgba(61,43,31,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--brown-dark);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .app-header {
+    background: linear-gradient(135deg, var(--brown-dark) 0%, var(--brown-mid) 100%);
+    padding: 16px 20px 12px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+  .app-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+  .app-header p {
+    font-size: 0.72rem;
+    color: var(--brown-light);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* MACRO BAR */
+  .macro-banner {
+    background: var(--white);
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--cream-dark);
+  }
+  .macro-banner-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--brown-light);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .macro-banner-title span { color: var(--terracotta); font-weight: 600; }
+  .macro-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px; }
+  .macro-cell {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+  }
+  .macro-cell .val { font-size: 1.1rem; font-weight: 600; color: var(--brown-dark); }
+  .macro-cell .lbl { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--brown-light); margin-top: 1px; }
+  .macro-cell .goal { font-size: 0.65rem; color: var(--brown-light); }
+  .macro-bars { display: flex; flex-direction: column; gap: 5px; }
+  .macro-bar-row { display: flex; align-items: center; gap: 8px; }
+  .macro-bar-row .bar-label { font-size: 0.65rem; width: 52px; color: var(--brown-mid); }
+  .macro-bar-track { flex: 1; background: var(--cream-dark); border-radius: 20px; height: 7px; overflow: hidden; }
+  .macro-bar-fill { height: 100%; border-radius: 20px; transition: width 0.4s ease; }
+  .bar-cal { background: linear-gradient(90deg, var(--terracotta), var(--terracotta-light)); }
+  .bar-protein { background: linear-gradient(90deg, var(--green-soft), #9EC8A2); }
+  .bar-carbs { background: linear-gradient(90deg, var(--gold), #D4B87E); }
+  .bar-fat { background: linear-gradient(90deg, var(--rose-gold), #C89A80); }
+  .macro-bar-row .bar-pct { font-size: 0.62rem; color: var(--brown-light); width: 28px; text-align: right; }
+
+  /* TABS */
+  .tab-nav {
+    background: var(--white);
+    display: flex;
+    overflow-x: auto;
+    border-bottom: 2px solid var(--cream-dark);
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    position: sticky;
+    top: 72px;
+    z-index: 90;
+  }
+  .tab-nav::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    flex-shrink: 0;
+    padding: 11px 14px;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--brown-light);
+    cursor: pointer;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    color: var(--terracotta);
+    border-bottom-color: var(--terracotta);
+    font-weight: 600;
+  }
+
+  .tab-content { display: none; padding: 16px; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--brown-dark);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon { font-size: 1rem; }
+
+  /* MEAL CARDS */
+  .meal-card {
+    background: var(--white);
+    border-radius: 14px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .meal-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+  }
+  .meal-header-left { display: flex; align-items: center; gap: 10px; }
+  .meal-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .meal-name { font-weight: 600; font-size: 0.85rem; color: var(--brown-dark); }
+  .meal-cals { font-size: 0.72rem; color: var(--brown-light); margin-top: 1px; }
+  .meal-arrow { font-size: 0.8rem; color: var(--brown-light); transition: transform 0.2s; }
+  .meal-arrow.open { transform: rotate(180deg); }
+  .meal-body { display: none; padding: 0 16px 16px; border-top: 1px solid var(--cream-dark); }
+  .meal-body.open { display: block; }
+  .food-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--cream);
+    font-size: 0.8rem;
+  }
+  .food-item:last-child { border-bottom: none; }
+  .food-item-name { color: var(--brown-dark); font-weight: 500; }
+  .food-item-macros { display: flex; gap: 10px; font-size: 0.7rem; color: var(--brown-light); }
+  .food-item-macros span { display: flex; flex-direction: column; align-items: center; }
+  .food-item-macros span b { color: var(--brown-dark); font-size: 0.78rem; }
+  .add-food-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 8px;
+    background: var(--terracotta-pale);
+    border: 1.5px dashed var(--terracotta-light);
+    border-radius: 8px;
+    color: var(--terracotta);
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .add-food-btn:hover { background: var(--rose-pale); }
+
+  /* FOOD LOG */
+  .log-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--cream-dark);
+    font-size: 0.8rem;
+  }
+  .log-entry:last-child { border-bottom: none; }
+  .log-entry-left .name { font-weight: 500; color: var(--brown-dark); }
+  .log-entry-left .meta { font-size: 0.68rem; color: var(--brown-light); margin-top: 2px; }
+  .log-entry-right { display: flex; align-items: center; gap: 10px; }
+  .log-entry-cals { font-weight: 600; color: var(--terracotta); font-size: 0.82rem; }
+  .log-del-btn { background: none; border: none; cursor: pointer; color: var(--brown-light); font-size: 0.9rem; padding: 2px 4px; }
+
+  /* QUICK ADD */
+  .quick-add-row { display: flex; gap: 8px; margin-bottom: 14px; }
+  .quick-add-row input, .quick-add-row select {
+    flex: 1;
+    padding: 9px 12px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    background: var(--cream);
+    color: var(--brown-dark);
+    outline: none;
+  }
+  .quick-add-row input:focus, .quick-add-row select:focus {
+    border-color: var(--terracotta-light);
+  }
+  .btn-primary {
+    padding: 9px 16px;
+    background: var(--terracotta);
+    color: var(--white);
+    border: none;
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .btn-primary:hover { background: var(--terracotta-light); }
+
+  /* SMART PAIRING */
+  .pairing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pairing-card {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border: 1.5px solid transparent;
+  }
+  .pairing-card:hover, .pairing-card.selected { background: var(--terracotta-pale); border-color: var(--terracotta-light); }
+  .pairing-card .emoji { font-size: 1.4rem; margin-bottom: 4px; }
+  .pairing-card .pc-name { font-size: 0.78rem; font-weight: 600; color: var(--brown-dark); }
+  .pairing-card .pc-pair { font-size: 0.68rem; color: var(--brown-light); margin-top: 2px; }
+  .pairing-result {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--gold-pale);
+    border-radius: 10px;
+    border-left: 3px solid var(--gold);
+    font-size: 0.78rem;
+    color: var(--brown-dark);
+    display: none;
+  }
+  .pairing-result.show { display: block; }
+  .pairing-result strong { color: var(--terracotta); }
+
+  /* BUILD YOUR PLATE */
+  .plate-container { position: relative; text-align: center; }
+  .plate-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    position: relative;
+    overflow: hidden;
+    border: 4px solid var(--cream-dark);
+    background: var(--cream);
+  }
+  .plate-section {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+  }
+  .plate-tl { top: 0; left: 0; background: var(--green-pale); border-bottom-right-radius: 100%; }
+  .plate-tr { top: 0; right: 0; background: var(--gold-pale); border-bottom-left-radius: 100%; }
+  .plate-bl { bottom: 0; left: 0; background: var(--rose-pale); border-top-right-radius: 100%; }
+  .plate-br { bottom: 0; right: 0; background: var(--terracotta-pale); border-top-left-radius: 100%; }
+  .plate-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--brown-dark);
+    text-align: center;
+    pointer-events: none;
+  }
+  .plate-legend { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .plate-legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--brown-mid); }
+  .plate-swatch { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+  .plate-sliders { margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .plate-slider-row label { font-size: 0.72rem; color: var(--brown-mid); display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .plate-slider-row input[type=range] { width: 100%; accent-color: var(--terracotta); }
+
+  /* MY FOODS */
+  .my-foods-list { display: flex; flex-direction: column; gap: 8px; }
+  .my-food-item {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .my-food-item .mf-name { font-weight: 500; font-size: 0.82rem; color: var(--brown-dark); }
+  .my-food-item .mf-meta { font-size: 0.68rem; color: var(--brown-light); margin-top: 2px; }
+  .my-food-item .mf-actions { display: flex; gap: 6px; }
+  .btn-sm {
+    padding: 5px 10px;
+    border-radius: 7px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+  }
+  .btn-add-log { background: var(--terracotta-pale); color: var(--terracotta); }
+  .btn-add-log:hover { background: var(--terracotta); color: white; }
+  .btn-delete { background: var(--cream-dark); color: var(--brown-light); }
+  .btn-delete:hover { background: #ddd; }
+  .my-foods-form { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+  .my-foods-form input {
+    padding: 8px 10px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    background: var(--cream);
+    color: var(--brown-dark);
+    outline: none;
+  }
+  .my-foods-form input:focus { border-color: var(--terracotta-light); }
+  .my-foods-form .btn-primary { grid-column: 1 / -1; }
+
+  /* ===== DAILY CHECKLIST TAB ===== */
+
+  /* Water Tracker */
+  .water-section { margin-bottom: 20px; }
+  .water-title { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-weight: 600; color: var(--brown-dark); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+  .water-subtitle { font-size: 0.7rem; color: var(--brown-light); margin-bottom: 12px; }
+  .water-day-row { margin-bottom: 10px; }
+  .water-day-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--brown-mid); margin-bottom: 6px; display: flex; justify-content: space-between; }
+  .water-day-label .glass-count { color: var(--terracotta); font-size: 0.72rem; }
+  .water-glasses { display: flex; gap: 6px; flex-wrap: wrap; }
+  .glass-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: 2px solid var(--cream-dark);
+    background: var(--cream);
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .glass-btn.filled {
+    background: #C8E6F5;
+    border-color: #7AB8D8;
+  }
+  .glass-btn:hover { transform: scale(1.08); }
+  .water-week-total {
+    margin-top: 10px;
+    padding: 10px 14px;
+    background: #EAF5FC;
+    border-radius: 10px;
+    border-left: 3px solid #7AB8D8;
+    font-size: 0.78rem;
+    color: var(--brown-mid);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .water-week-total strong { color: #4A8FAF; font-size: 1rem; }
+
+  /* Supplement Reminders */
+  .supplement-list { display: flex; flex-direction: column; gap: 10px; }
+  .supplement-item {
+    background: var(--cream);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .supplement-header {
+    display: flex;
+    align-items: center;
+    padding: 11px 14px;
+    cursor: pointer;
+    gap: 10px;
+  }
+  .supplement-check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--cream-dark);
+    background: white;
+    flex-shrink: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.15s;
+  }
+  .supplement-check.checked { background: var(--green-soft); border-color: var(--green-soft); color: white; }
+  .supplement-info { flex: 1; }
+  .supplement-name { font-weight: 600; font-size: 0.82rem; color: var(--brown-dark); }
+  .supplement-timing { font-size: 0.68rem; color: var(--brown-light); margin-top: 1px; }
+  .supplement-expand { font-size: 0.7rem; color: var(--brown-light); margin-left: auto; transition: transform 0.2s; }
+  .supplement-expand.open { transform: rotate(180deg); }
+  .supplement-details {
+    display: none;
+    padding: 0 14px 12px;
+    border-top: 1px solid var(--cream-dark);
+    background: var(--white);
+  }
+  .supplement-details.open { display: block; }
+  .supplement-details p { font-size: 0.75rem; color: var(--brown-mid); line-height: 1.5; margin-top: 10px; }
+  .supplement-details .supp-tag {
+    display: inline-block;
+    background: var(--terracotta-pale);
+    color: var(--terracotta);
+    border-radius: 20px;
+    padding: 2px 8px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    margin-right: 4px;
+    margin-top: 4px;
+  }
+  .supplement-tag-row { margin-top: 6px; }
+
+  /* Habits */
+  .habit-list { display: flex; flex-direction: column; gap: 8px; }
+  .habit-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--cream);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .habit-item.done { background: var(--green-pale); }
+  .habit-checkbox {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--cream-dark);
+    background: white;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.15s;
+  }
+  .habit-item.done .habit-checkbox { background: var(--green-soft); border-color: var(--green-soft); color: white; }
+  .habit-label { font-size: 0.8rem; font-weight: 500; color: var(--brown-dark); }
+  .habit-item.done .habit-label { text-decoration: line-through; color: var(--brown-light); }
+  .habit-streak { margin-left: auto; font-size: 0.68rem; color: var(--brown-light); }
+
+  /* Workout Checklist */
+  .workout-day-section { margin-bottom: 16px; }
+  .workout-day-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--brown-light);
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    background: var(--cream-dark);
+    border-radius: 7px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .workout-day-title .wkt-pct { color: var(--terracotta); }
+  .exercise-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    background: var(--cream);
+    border-radius: 9px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .exercise-item.done { background: var(--green-pale); }
+  .exercise-checkbox {
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    border: 2px solid var(--cream-dark);
+    background: white;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: all 0.15s;
+  }
+  .exercise-item.done .exercise-checkbox { background: var(--green-soft); border-color: var(--green-soft); color: white; }
+  .exercise-name { font-size: 0.8rem; font-weight: 500; color: var(--brown-dark); }
+  .exercise-item.done .exercise-name { text-decoration: line-through; color: var(--brown-light); }
+  .exercise-meta { margin-left: auto; font-size: 0.68rem; color: var(--brown-light); }
+
+  /* Reset Banner */
+  .reset-banner {
+    background: var(--gold-pale);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    border-left: 3px solid var(--gold);
+    font-size: 0.75rem;
+    color: var(--brown-mid);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .reset-banner strong { color: var(--brown-dark); }
+
+  /* Weekly reset button */
+  .btn-reset {
+    padding: 7px 14px;
+    background: var(--cream-dark);
+    color: var(--brown-mid);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-reset:hover { background: var(--terracotta-pale); color: var(--terracotta); }
+
+  /* Section divider */
+  .section-divider {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--brown-dark);
+    margin: 18px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--cream-dark);
+  }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-sheet {
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    padding: 20px 20px 32px;
+    width: 100%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal-handle { width: 40px; height: 4px; background: var(--cream-dark); border-radius: 2px; margin: 0 auto 16px; }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 700; color: var(--brown-dark); margin-bottom: 4px; }
+  .modal-sub { font-size: 0.72rem; color: var(--brown-light); margin-bottom: 14px; }
+  .modal-form { display: flex; flex-direction: column; gap: 10px; }
+  .modal-form input, .modal-form select {
+    padding: 10px 12px;
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    background: var(--cream);
+    color: var(--brown-dark);
+    outline: none;
+    width: 100%;
+  }
+  .modal-form input:focus, .modal-form select:focus { border-color: var(--terracotta-light); }
+  .modal-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--brown-light); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--brown-dark);
+    color: var(--cream);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    transition: transform 0.3s ease;
+    z-index: 300;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* Progress ring for water */
+  .water-ring-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding: 14px;
+    background: #EAF5FC;
+    border-radius: 14px;
+  }
+  .water-ring-info { text-align: center; }
+  .water-ring-info .big-num { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 700; color: #4A8FAF; line-height: 1; }
+  .water-ring-info .big-label { font-size: 0.68rem; color: var(--brown-light); text-transform: uppercase; letter-spacing: 0.08em; }
+  .water-ring-info .goal-note { font-size: 0.7rem; color: var(--brown-mid); margin-top: 2px; }
+  svg.ring { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: #D0E8F5; stroke-width: 8; }
+  .ring-fill { fill: none; stroke: #7AB8D8; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 0.4s ease; }
+
+  /* Day tabs for water */
+  .day-tabs { display: flex; gap: 4px; margin-bottom: 12px; overflow-x: auto; scrollbar-width: none; }
+  .day-tabs::-webkit-scrollbar { display: none; }
+  .day-tab-btn {
+    flex-shrink: 0;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1.5px solid var(--cream-dark);
+    background: var(--cream);
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--brown-light);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .day-tab-btn.active { background: #C8E6F5; border-color: #7AB8D8; color: #3A7A9A; font-weight: 600; }
+  .day-tab-btn.today { border-color: var(--terracotta-light); }
+
+  .checklist-tab-nav {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .checklist-tab-nav::-webkit-scrollbar { display: none; }
+  .cl-tab {
+    flex-shrink: 0;
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--cream-dark);
+    background: var(--cream);
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: var(--brown-light);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cl-tab.active { background: var(--terracotta); border-color: var(--terracotta); color: white; font-weight: 600; }
+  .cl-panel { display: none; }
+  .cl-panel.active { display: block; }
+
+  /* Progress summary bar */
+  .progress-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .prog-box {
+    background: var(--white);
+    border-radius: 10px;
+    padding: 10px 8px;
+    text-align: center;
+    box-shadow: 0 1px 4px var(--shadow);
+  }
+  .prog-box .prog-num { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 700; color: var(--terracotta); }
+  .prog-box .prog-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--brown-light); margin-top: 1px; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 24px;
+    color: var(--brown-light);
+    font-size: 0.8rem;
+  }
+  .empty-state .e-icon { font-size: 2rem; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>✨ J Empire Nutrition Hub</h1>
+  <p>Fueling the empire — one meal at a time</p>
+</div>
+
+<!-- MACRO BANNER -->
+<div class="macro-banner">
+  <div class="macro-banner-title">
+    <span>Today's Macros</span>
+    <span id="macroDate" style="font-weight:400;color:var(--brown-light)"></span>
+  </div>
+  <div class="macro-grid">
+    <div class="macro-cell">
+      <div class="val" id="totalCals">0</div>
+      <div class="lbl">Calories</div>
+      <div class="goal">/ 1800</div>
+    </div>
+    <div class="macro-cell">
+      <div class="val" id="totalProtein">0g</div>
+      <div class="lbl">Protein</div>
+      <div class="goal">/ 130g</div>
+    </div>
+    <div class="macro-cell">
+      <div class="val" id="totalCarbs">0g</div>
+      <div class="lbl">Carbs</div>
+      <div class="goal">/ 180g</div>
+    </div>
+    <div class="macro-cell">
+      <div class="val" id="totalFat">0g</div>
+      <div class="lbl">Fat</div>
+      <div class="goal">/ 60g</div>
+    </div>
+  </div>
+  <div class="macro-bars">
+    <div class="macro-bar-row">
+      <span class="bar-label">Calories</span>
+      <div class="macro-bar-track"><div class="macro-bar-fill bar-cal" id="barCal" style="width:0%"></div></div>
+      <span class="bar-pct" id="pctCal">0%</span>
+    </div>
+    <div class="macro-bar-row">
+      <span class="bar-label">Protein</span>
+      <div class="macro-bar-track"><div class="macro-bar-fill bar-protein" id="barPro" style="width:0%"></div></div>
+      <span class="bar-pct" id="pctPro">0%</span>
+    </div>
+    <div class="macro-bar-row">
+      <span class="bar-label">Carbs</span>
+      <div class="macro-bar-track"><div class="macro-bar-fill bar-carbs" id="barCarb" style="width:0%"></div></div>
+      <span class="bar-pct" id="pctCarb">0%</span>
+    </div>
+    <div class="macro-bar-row">
+      <span class="bar-label">Fat</span>
+      <div class="macro-bar-track"><div class="macro-bar-fill bar-fat" id="barFat" style="width:0%"></div></div>
+      <span class="bar-pct" id="pctFat">0%</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN TABS -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('meals')">🍽 Meals</button>
+  <button class="tab-btn" onclick="switchTab('log')">📋 Food Log</button>
+  <button class="tab-btn" onclick="switchTab('pairing')">🤝 Smart Pair</button>
+  <button class="tab-btn" onclick="switchTab('plate')">🍱 Build Plate</button>
+  <button class="tab-btn" onclick="switchTab('myfoods')">⭐ My Foods</button>
+  <button class="tab-btn" onclick="switchTab('checklist')">✅ Daily Check</button>
+</div>
+
+<!-- TAB: MEALS -->
+<div class="tab-content active" id="tab-meals">
+
+  <div id="mealCards"></div>
+
+</div>
+
+<!-- TAB: FOOD LOG -->
+<div class="tab-content" id="tab-log">
+  <div class="card">
+    <div class="card-title"><span class="icon">➕</span> Quick Add Food</div>
+    <div class="quick-add-row">
+      <input type="text" id="logName" placeholder="Food name">
+      <input type="number" id="logCals" placeholder="Cal" style="max-width:70px">
+    </div>
+    <div class="quick-add-row">
+      <input type="number" id="logPro" placeholder="Protein (g)" style="flex:1">
+      <input type="number" id="logCarb" placeholder="Carbs (g)" style="flex:1">
+      <input type="number" id="logFat" placeholder="Fat (g)" style="flex:1">
+    </div>
+    <div class="quick-add-row">
+      <select id="logMeal">
+        <option value="Breakfast">Breakfast</option>
+        <option value="AM Snack">AM Snack</option>
+        <option value="Lunch">Lunch</option>
+        <option value="PM Snack">PM Snack</option>
+        <option value="Dinner">Dinner</option>
+      </select>
+      <button class="btn-primary" onclick="addLogEntry()">Add ➜</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📋</span> Today's Log</div>
+    <div id="foodLogList">
+      <div class="empty-state"><div class="e-icon">🍽️</div>No foods logged yet. Add your first meal above!</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: SMART PAIRING -->
+<div class="tab-content" id="tab-pairing">
+  <div class="card">
+    <div class="card-title"><span class="icon">🤝</span> Smart Food Pairing</div>
+    <p style="font-size:0.75rem;color:var(--brown-light);margin-bottom:14px;">Tap a food to see its best nutritional pairing partners</p>
+    <div class="pairing-grid" id="pairingGrid"></div>
+    <div class="pairing-result" id="pairingResult"></div>
+  </div>
+</div>
+
+<!-- TAB: BUILD YOUR PLATE -->
+<div class="tab-content" id="tab-plate">
+  <div class="card">
+    <div class="card-title"><span class="icon">🍱</span> Build Your Plate</div>
+    <p style="font-size:0.75rem;color:var(--brown-light);margin-bottom:16px;">Drag the sliders to balance your plate macros. Aim for MyPlate guidelines.</p>
+    <div class="plate-container">
+      <div class="plate-circle">
+        <div class="plate-section plate-tl" id="ptl"></div>
+        <div class="plate-section plate-tr" id="ptr"></div>
+        <div class="plate-section plate-bl" id="pbl"></div>
+        <div class="plate-section plate-br" id="pbr"></div>
+        <div class="plate-center" id="plateCenter">Balanced<br>Plate</div>
+      </div>
+    </div>
+    <div class="plate-legend">
+      <div class="plate-legend-item"><div class="plate-swatch" style="background:var(--green-pale);border:1px solid #9EC8A2"></div><span id="vegLabel">Veggies 25%</span></div>
+      <div class="plate-legend-item"><div class="plate-swatch" style="background:var(--gold-pale);border:1px solid var(--gold)"></div><span id="grainLabel">Grains 25%</span></div>
+      <div class="plate-legend-item"><div class="plate-swatch" style="background:var(--rose-pale);border:1px solid var(--rose-gold)"></div><span id="proteinLabel">Protein 25%</span></div>
+      <div class="plate-legend-item"><div class="plate-swatch" style="background:var(--terracotta-pale);border:1px solid var(--terracotta-light)"></div><span id="fruitLabel">Fruit 25%</span></div>
+    </div>
+    <div class="plate-sliders">
+      <div class="plate-slider-row">
+        <label>Veggies <span id="vegPct">25%</span></label>
+        <input type="range" min="5" max="60" value="25" id="sliderVeg" oninput="updatePlate()">
+      </div>
+      <div class="plate-slider-row">
+        <label>Grains <span id="grainPct">25%</span></label>
+        <input type="range" min="5" max="60" value="25" id="sliderGrain" oninput="updatePlate()">
+      </div>
+      <div class="plate-slider-row">
+        <label>Protein <span id="proteinPct">25%</span></label>
+        <input type="range" min="5" max="60" value="25" id="sliderProtein" oninput="updatePlate()">
+      </div>
+      <div class="plate-slider-row">
+        <label>Fruit <span id="fruitPct">25%</span></label>
+        <input type="range" min="5" max="60" value="25" id="sliderFruit" oninput="updatePlate()">
+      </div>
+    </div>
+    <div id="plateAdvice" style="margin-top:14px;padding:10px 12px;background:var(--gold-pale);border-radius:9px;font-size:0.75rem;color:var(--brown-mid);border-left:3px solid var(--gold)">
+      Adjust sliders to get personalized plate advice.
+    </div>
+  </div>
+</div>
+
+<!-- TAB: MY FOODS -->
+<div class="tab-content" id="tab-myfoods">
+  <div class="card">
+    <div class="card-title"><span class="icon">⭐</span> My Saved Foods</div>
+    <div class="my-foods-list" id="myFoodsList">
+      <div class="empty-state"><div class="e-icon">📦</div>No saved foods yet. Add your go-tos below!</div>
+    </div>
+    <div style="margin-top:16px">
+      <div class="card-title" style="font-size:0.88rem;margin-bottom:10px">➕ Save a Food</div>
+      <div class="my-foods-form">
+        <input type="text" id="mfName" placeholder="Food name" style="grid-column:1/-1">
+        <input type="number" id="mfCals" placeholder="Calories">
+        <input type="number" id="mfPro" placeholder="Protein (g)">
+        <input type="number" id="mfCarb" placeholder="Carbs (g)">
+        <input type="number" id="mfFat" placeholder="Fat (g)">
+        <input type="text" id="mfServing" placeholder="Serving size (e.g. 1 cup)">
+        <button class="btn-primary" onclick="saveMyFood()">Save Food ⭐</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB: DAILY CHECKLIST -->
+<div class="tab-content" id="tab-checklist">
+
+  <!-- Reset banner -->
+  <div class="reset-banner">
+    <div>
+      <strong>Weekly Reset: Mondays</strong><br>
+      <span style="font-size:0.68rem">Resets every Monday. Water, habits & workouts carry through the week.</span>
+    </div>
+    <button class="btn-reset" onclick="confirmWeeklyReset()">Reset Week</button>
+  </div>
+
+  <!-- Progress summary -->
+  <div class="progress-summary">
+    <div class="prog-box">
+      <div class="prog-num" id="progWater">0</div>
+      <div class="prog-label">oz Today</div>
+    </div>
+    <div class="prog-box">
+      <div class="prog-num" id="progHabits">0/0</div>
+      <div class="prog-label">Habits</div>
+    </div>
+    <div class="prog-box">
+      <div class="prog-num" id="progWorkout">0/0</div>
+      <div class="prog-label">Exercises</div>
+    </div>
+  </div>
+
+  <!-- Checklist sub-tabs -->
+  <div class="checklist-tab-nav">
+    <button class="cl-tab active" onclick="switchClTab('water')">💧 Water</button>
+    <button class="cl-tab" onclick="switchClTab('supps')">💊 Supplements</button>
+    <button class="cl-tab" onclick="switchClTab('habits')">🌟 Habits</button>
+    <button class="cl-tab" onclick="switchClTab('workouts')">🏋️ Workouts</button>
+  </div>
+
+  <!-- Water Panel -->
+  <div class="cl-panel active" id="panel-water">
+    <div class="card">
+      <div class="water-ring-wrap">
+        <div>
+          <div style="font-size:0.78rem;font-weight:600;color:var(--brown-dark);margin-bottom:4px">Today's Intake</div>
+          <div style="font-size:0.7rem;color:var(--brown-light);margin-bottom:8px">Goal: 8 glasses (64 oz)</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <div class="water-ring-info">
+              <div class="big-num" id="todayGlasses">0</div>
+              <div class="big-label">glasses</div>
+              <div class="goal-note" id="ozDisplay">0 oz</div>
+            </div>
+          </div>
+        </div>
+        <svg class="ring" width="90" height="90" viewBox="0 0 90 90">
+          <circle class="ring-bg" cx="45" cy="45" r="36"/>
+          <circle class="ring-fill" id="waterRing" cx="45" cy="45" r="36" 
+            stroke-dasharray="226" stroke-dashoffset="226"/>
+        </svg>
+      </div>
+
+      <div class="water-title">💧 Log Glasses <span style="font-size:0.7rem;font-weight:400;color:var(--brown-light)">(tap to fill/unfill)</span></div>
+      <div style="font-size:0.7rem;color:var(--brown-light);margin-bottom:10px">Today — each glass = 8 oz</div>
+      <div class="water-glasses" id="todayGlassGrid"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span class="icon">📅</span> This Week's Water Log</div>
+      <div id="weekWaterLog"></div>
+      <div class="water-week-total">
+        <span>Week Total</span>
+        <strong id="weekTotalGlasses">0 glasses</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplements Panel -->
+  <div class="cl-panel" id="panel-supps">
+    <div class="card">
+      <div class="card-title"><span class="icon">💊</span> Daily Supplements</div>
+      <p style="font-size:0.72rem;color:var(--brown-light);margin-bottom:14px">Tap ▾ to learn about each supplement. Check off when taken.</p>
+      <div class="supplement-list" id="supplementList"></div>
+    </div>
+  </div>
+
+  <!-- Habits Panel -->
+  <div class="cl-panel" id="panel-habits">
+    <div class="card">
+      <div class="card-title"><span class="icon">🌟</span> Daily Habits</div>
+      <div class="habit-list" id="habitList"></div>
+    </div>
+  </div>
+
+  <!-- Workouts Panel -->
+  <div class="cl-panel" id="panel-workouts">
+    <div class="card">
+      <div class="card-title"><span class="icon">🏋️</span> Weekly Workout Tracker</div>
+      <div id="workoutChecklist"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Add Food Modal -->
+<div class="modal-overlay" id="addFoodModal">
+  <div class="modal-sheet" style="position:relative">
+    <div class="modal-handle"></div>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalMealName">Add to Breakfast</div>
+    <div class="modal-sub">Enter nutritional info or choose from your saved foods</div>
+    <div class="modal-form">
+      <input type="text" id="modalFoodName" placeholder="Food name (e.g. Greek yogurt)">
+      <div class="modal-form-row">
+        <input type="number" id="modalCals" placeholder="Calories">
+        <input type="number" id="modalPro" placeholder="Protein (g)">
+      </div>
+      <div class="modal-form-row">
+        <input type="number" id="modalCarb" placeholder="Carbs (g)">
+        <input type="number" id="modalFat" placeholder="Fat (g)">
+      </div>
+      <button class="btn-primary" onclick="addFoodFromModal()">Add to Meal ✓</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let state = JSON.parse(localStorage.getItem('jempire_nutrition') || '{}');
+
+const defaults = {
+  foodLog: [],
+  myFoods: [
+    { id: 1, name: 'Greek Yogurt (plain, 0% fat)', cals: 100, protein: 17, carbs: 6, fat: 0, serving: '1 cup' },
+    { id: 2, name: 'Chicken Breast (grilled)', cals: 165, protein: 31, carbs: 0, fat: 3.6, serving: '4 oz' },
+    { id: 3, name: 'Brown Rice (cooked)', cals: 216, protein: 5, carbs: 45, fat: 1.8, serving: '1 cup' },
+    { id: 4, name: 'Avocado (half)', cals: 120, protein: 1.5, carbs: 6, fat: 11, serving: '½ avocado' },
+    { id: 5, name: 'Banana', cals: 105, protein: 1.3, carbs: 27, fat: 0.4, serving: '1 medium' },
+    { id: 6, name: 'Eggs (whole)', cals: 70, protein: 6, carbs: 0.5, fat: 5, serving: '1 egg' },
+    { id: 7, name: 'Oatmeal (old-fashioned)', cals: 150, protein: 5, carbs: 27, fat: 3, serving: '½ cup dry' },
+    { id: 8, name: 'Sweet Potato', cals: 103, protein: 2.3, carbs: 24, fat: 0.1, serving: '1 medium' },
+  ],
+  waterData: {},    // { "YYYY-MM-DD": number_of_glasses }
+  supplements: [
+    { id: 1, name: 'Magnesium Glycinate', timing: 'Take at bedtime', taken: false,
+      info: 'Magnesium glycinate is highly bioavailable and gentle on the stomach. It supports muscle relaxation, better sleep quality, reduced anxiety, and proper nerve function. Ideal before bed as it promotes deep, restorative sleep. Helps with post-workout muscle recovery and PMS cramps.',
+      tags: ['Sleep', 'Muscle Recovery', 'Stress Relief', 'Women\'s Health'] },
+    { id: 2, name: 'Vitamin D3 + K2', timing: 'Take with breakfast (fat meal)', taken: false,
+      info: 'D3 supports immune function, bone health, mood, and energy levels. K2 ensures calcium is directed to bones rather than arteries. This combo is especially important if you spend limited time outdoors. Best absorbed with a fat-containing meal.',
+      tags: ['Immunity', 'Bone Health', 'Mood', 'Energy'] },
+    { id: 3, name: 'Omega-3 Fish Oil', timing: 'Take with a meal (reduces fishy burps)', taken: false,
+      info: 'Omega-3 fatty acids (EPA and DHA) reduce inflammation, support brain function, heart health, and joint comfort. They also support healthy skin and mood stability. Look for 1000–2000mg combined EPA+DHA daily. Always take with food.',
+      tags: ['Anti-Inflammatory', 'Heart Health', 'Brain Health', 'Skin'] },
+    { id: 4, name: 'Collagen Peptides', timing: 'Add to morning coffee or smoothie', taken: false,
+      info: 'Hydrolyzed collagen supports skin elasticity, joint health, and gut lining integrity. It provides glycine and proline — amino acids your body can\'t get enough of from regular protein sources. Dissolves easily in hot or cold liquids with no taste.',
+      tags: ['Skin', 'Joints', 'Gut Health', 'Hair & Nails'] },
+    { id: 5, name: 'Probiotics', timing: 'Take in the morning on an empty stomach', taken: false,
+      info: 'Probiotics introduce beneficial bacteria to your gut microbiome, supporting digestion, immunity, and even mood (gut-brain axis). Look for multi-strain formulas. Refrigerated types are often more potent. Consistency is key — benefits build over weeks.',
+      tags: ['Gut Health', 'Immunity', 'Digestion', 'Mood'] },
+    { id: 6, name: 'Iron (if prescribed)', timing: 'Take with Vitamin C for absorption', taken: false,
+      info: 'Iron supports red blood cell production, energy, and focus. Many women are iron-deficient without knowing it. Take with orange juice or a Vitamin C supplement for up to 3× better absorption. Avoid taking with dairy, calcium, or coffee which block absorption.',
+      tags: ['Energy', 'Iron Deficiency', 'Women\'s Health', 'Focus'] },
+  ],
+  habits: [
+    { id: 1, label: '🌅 Wake up by 6:30 AM', done: false },
+    { id: 2, label: '🙏 Morning gratitude / prayer', done: false },
+    { id: 3, label: '🚶 10-minute walk or movement', done: false },
+    { id: 4, label: '📖 Read or study for 15 min', done: false },
+    { id: 5, label: '🥗 Eat whole foods at lunch', done: false },
+    { id: 6, label: '📵 Phone-free family time', done: false },
+    { id: 7, label: '🌙 In bed by 10:30 PM', done: false },
+    { id: 8, label: '✍️ Journal one win today', done: false },
+  ],
+  workoutChecks: {},  // { "exerciseId": bool }
+  lastResetWeek: null,
+};
+
+// Merge defaults with saved state
+Object.keys(defaults).forEach(k => {
+  if (!(k in state)) state[k] = defaults[k];
+});
+
+function save() {
+  localStorage.setItem('jempire_nutrition', JSON.stringify(state));
+}
+
+// ============================================================
+// MEALS DATA
+// ============================================================
+const meals = [
+  {
+    id: 'breakfast', name: 'Breakfast', color: '#C8A96E', dotColor: '#C8A96E',
+    cals: 400,
+    items: [
+      { name: '2 Whole Eggs (scrambled)', cals: 140, protein: 12, carbs: 1, fat: 10 },
+      { name: 'Oatmeal with berries', cals: 180, protein: 5, carbs: 35, fat: 3 },
+      { name: 'Black coffee', cals: 5, protein: 0, carbs: 1, fat: 0 },
+      { name: '½ Avocado', cals: 120, protein: 1.5, carbs: 6, fat: 11 },
+    ]
+  },
+  {
+    id: 'am_snack', name: 'AM Snack', color: '#7A9E7E', dotColor: '#7A9E7E',
+    cals: 200,
+    items: [
+      { name: 'Greek Yogurt (plain)', cals: 100, protein: 17, carbs: 6, fat: 0 },
+      { name: 'Mixed berries', cals: 60, protein: 0.8, carbs: 14, fat: 0.4 },
+      { name: 'Handful almonds', cals: 90, protein: 3, carbs: 3, fat: 8 },
+    ]
+  },
+  {
+    id: 'lunch', name: 'Lunch', color: '#C4714A', dotColor: '#C4714A',
+    cals: 500,
+    items: [
+      { name: 'Grilled Chicken Breast (4oz)', cals: 165, protein: 31, carbs: 0, fat: 3.6 },
+      { name: 'Brown Rice (1 cup)', cals: 216, protein: 5, carbs: 45, fat: 1.8 },
+      { name: 'Steamed broccoli', cals: 55, protein: 3.7, carbs: 11, fat: 0.6 },
+      { name: 'Olive oil drizzle', cals: 60, protein: 0, carbs: 0, fat: 7 },
+    ]
+  },
+  {
+    id: 'pm_snack', name: 'PM Snack', color: '#B8866A', dotColor: '#B8866A',
+    cals: 150,
+    items: [
+      { name: 'Apple', cals: 95, protein: 0.5, carbs: 25, fat: 0.3 },
+      { name: 'Peanut butter (1 tbsp)', cals: 95, protein: 4, carbs: 3, fat: 8 },
+    ]
+  },
+  {
+    id: 'dinner', name: 'Dinner', color: '#3D2B1F', dotColor: '#6B4C3B',
+    cals: 550,
+    items: [
+      { name: 'Salmon fillet (4oz)', cals: 236, protein: 25, carbs: 0, fat: 15 },
+      { name: 'Sweet potato (medium)', cals: 103, protein: 2.3, carbs: 24, fat: 0.1 },
+      { name: 'Side salad w/ olive oil', cals: 100, protein: 2, carbs: 10, fat: 6 },
+      { name: 'Lemon water', cals: 5, protein: 0, carbs: 1, fat: 0 },
+    ]
+  },
+];
+
+// ============================================================
+// WORKOUT DATA
+// ============================================================
+const weekWorkouts = [
+  {
+    day: 'Monday — Glutes & Hamstrings',
+    exercises: [
+      { id: 'w1e1', name: 'Hip Thrusts', meta: '4×12' },
+      { id: 'w1e2', name: 'Romanian Deadlifts', meta: '3×10' },
+      { id: 'w1e3', name: 'Walking Lunges', meta: '3×12 each' },
+      { id: 'w1e4', name: 'Cable Kickbacks', meta: '3×15 each' },
+      { id: 'w1e5', name: 'Lying Leg Curl', meta: '3×12' },
+    ]
+  },
+  {
+    day: 'Tuesday — Upper Body',
+    exercises: [
+      { id: 'w2e1', name: 'Dumbbell Shoulder Press', meta: '3×12' },
+      { id: 'w2e2', name: 'Lat Pulldown', meta: '3×12' },
+      { id: 'w2e3', name: 'Chest Press (DB)', meta: '3×10' },
+      { id: 'w2e4', name: 'Bent-Over Row', meta: '3×10' },
+      { id: 'w2e5', name: 'Tricep Dips / Pushdown', meta: '3×15' },
+      { id: 'w2e6', name: 'Bicep Curls', meta: '3×12' },
+    ]
+  },
+  {
+    day: 'Wednesday — Active Recovery / Walk',
+    exercises: [
+      { id: 'w3e1', name: '20–30 min walk', meta: 'Low intensity' },
+      { id: 'w3e2', name: 'Full body stretching', meta: '10–15 min' },
+      { id: 'w3e3', name: 'Foam rolling', meta: '5–10 min' },
+    ]
+  },
+  {
+    day: 'Thursday — Glutes & Quads',
+    exercises: [
+      { id: 'w4e1', name: 'Barbell Squats', meta: '4×10' },
+      { id: 'w4e2', name: 'Sumo Deadlifts', meta: '3×10' },
+      { id: 'w4e3', name: 'Leg Press', meta: '3×15' },
+      { id: 'w4e4', name: 'Glute Bridge Pulses', meta: '3×20' },
+      { id: 'w4e5', name: 'Step-Ups', meta: '3×12 each' },
+    ]
+  },
+  {
+    day: 'Friday — Core & Cardio',
+    exercises: [
+      { id: 'w5e1', name: 'Plank holds', meta: '3×45 sec' },
+      { id: 'w5e2', name: 'Dead Bug', meta: '3×10 each' },
+      { id: 'w5e3', name: 'Russian Twists', meta: '3×20' },
+      { id: 'w5e4', name: 'Bicycle Crunches', meta: '3×20' },
+      { id: 'w5e5', name: '20 min Incline Walk / Stairmaster', meta: 'Steady state' },
+    ]
+  },
+  {
+    day: 'Saturday — Full Body Burn',
+    exercises: [
+      { id: 'w6e1', name: 'Kettlebell Swings', meta: '3×20' },
+      { id: 'w6e2', name: 'Push-Ups', meta: '3×15' },
+      { id: 'w6e3', name: 'Jump Squats', meta: '3×12' },
+      { id: 'w6e4', name: 'Mountain Climbers', meta: '3×30 sec' },
+      { id: 'w6e5', name: 'Burpees', meta: '3×10' },
+    ]
+  },
+  {
+    day: 'Sunday — Rest Day',
+    exercises: [
+      { id: 'w7e1', name: 'Yoga / gentle stretching', meta: 'Optional' },
+      { id: 'w7e2', name: 'Prep meals for the week', meta: '💪 Empire tip' },
+    ]
+  },
+];
+
+// ============================================================
+// PAIRING DATA
+// ============================================================
+const pairings = [
+  { emoji: '🥩', name: 'Chicken', pair: 'Brown rice or sweet potato', tip: 'Chicken + complex carbs = complete muscle-building meal. The carbs replenish glycogen while the protein repairs muscle fibers. Add a squeeze of lemon for iron absorption boost.' },
+  { emoji: '🥚', name: 'Eggs', pair: 'Leafy greens & whole grain toast', tip: 'Eggs + spinach provides complete protein with iron, folate, and Vitamin K. Adding toast adds complex carbs to sustain energy without blood sugar spikes. The fat in yolks helps absorb fat-soluble vitamins from greens.' },
+  { emoji: '🐟', name: 'Salmon', pair: 'Asparagus & quinoa', tip: 'Salmon\'s omega-3s pair with asparagus folate and B vitamins for heart and brain health. Quinoa adds all 9 essential amino acids, making this a complete anti-inflammatory power meal.' },
+  { emoji: '🫘', name: 'Beans', pair: 'Brown rice or corn tortilla', tip: 'This classic combo creates a complete protein — beans are low in methionine, rice is high in it. Together they match or exceed animal protein quality. Budget-friendly and fiber-rich for lasting fullness.' },
+  { emoji: '🥑', name: 'Avocado', pair: 'Eggs or tomatoes', tip: 'Avocado fat dramatically increases lycopene absorption from tomatoes (up to 4×). With eggs, healthy fats support hormone production and help your body use fat-soluble vitamins A, D, E, and K.' },
+  { emoji: '🍫', name: 'Dark Chocolate', pair: 'Almonds or strawberries', tip: 'Dark chocolate + almonds = magnesium + Vitamin E combo for heart health and reduced inflammation. The healthy fats in almonds slow the chocolate\'s sugar absorption, preventing spikes. A satisfying and guilt-free evening snack.' },
+  { emoji: '🥣', name: 'Oatmeal', pair: 'Banana & almond butter', tip: 'Oats + banana provides quick and slow-release carbs for sustained energy. Almond butter adds protein and healthy fats to prevent mid-morning crashes. This combo supports serotonin production — great for mood.' },
+  { emoji: '🧀', name: 'Cottage Cheese', pair: 'Pineapple or berries', tip: 'Cottage cheese is rich in casein protein — a slow-digesting protein perfect before bed to feed muscles overnight. Pairing with fruit adds Vitamin C which boosts immune function and collagen production.' },
+];
+
+// ============================================================
+// RENDER FUNCTIONS
+// ============================================================
+
+function renderMealCards() {
+  const container = document.getElementById('mealCards');
+  container.innerHTML = meals.map(meal => `
+    <div class="meal-card">
+      <div class="meal-header" onclick="toggleMeal('${meal.id}')">
+        <div class="meal-header-left">
+          <div class="meal-dot" style="background:${meal.dotColor}"></div>
+          <div>
+            <div class="meal-name">${meal.name}</div>
+            <div class="meal-cals">~${meal.cals} cal target</div>
+          </div>
+        </div>
+        <span class="meal-arrow" id="arrow_${meal.id}">▾</span>
+      </div>
+      <div class="meal-body" id="body_${meal.id}">
+        ${meal.items.map(item => `
+          <div class="food-item">
+            <span class="food-item-name">${item.name}</span>
+            <div class="food-item-macros">
+              <span><b>${item.cals}</b>cal</span>
+              <span><b>${item.protein}g</b>pro</span>
+              <span><b>${item.carbs}g</b>carb</span>
+              <span><b>${item.fat}g</b>fat</span>
+            </div>
+          </div>
+        `).join('')}
+        <button class="add-food-btn" onclick="openModal('${meal.name}')">➕ Add food to ${meal.name}</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleMeal(id) {
+  const body = document.getElementById('body_' + id);
+  const arrow = document.getElementById('arrow_' + id);
+  body.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+function renderFoodLog() {
+  const container = document.getElementById('foodLogList');
+  if (!state.foodLog.length) {
+    container.innerHTML = '<div class="empty-state"><div class="e-icon">🍽️</div>No foods logged yet. Add your first meal above!</div>';
+    return;
+  }
+  container.innerHTML = state.foodLog.map((entry, i) => `
+    <div class="log-entry">
+      <div class="log-entry-left">
+        <div class="name">${entry.name}</div>
+        <div class="meta">${entry.meal} • P:${entry.protein}g C:${entry.carbs}g F:${entry.fat}g</div>
+      </div>
+      <div class="log-entry-right">
+        <span class="log-entry-cals">${entry.cals} cal</span>
+        <button class="log-del-btn" onclick="deleteLogEntry(${i})">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateMacroBanner() {
+  const totals = state.foodLog.reduce((acc, e) => {
+    acc.cals += e.cals || 0;
+    acc.protein += e.protein || 0;
+    acc.carbs += e.carbs || 0;
+    acc.fat += e.fat || 0;
+    return acc;
+  }, { cals: 0, protein: 0, carbs: 0, fat: 0 });
+
+  document.getElementById('totalCals').textContent = Math.round(totals.cals);
+  document.getElementById('totalProtein').textContent = Math.round(totals.protein) + 'g';
+  document.getElementById('totalCarbs').textContent = Math.round(totals.carbs) + 'g';
+  document.getElementById('totalFat').textContent = Math.round(totals.fat) + 'g';
+
+  const goals = { cals: 1800, protein: 130, carbs: 180, fat: 60 };
+  [['Cal', totals.cals, goals.cals], ['Pro', totals.protein, goals.protein],
+   ['Carb', totals.carbs, goals.carbs], ['Fat', totals.fat, goals.fat]].forEach(([key, val, goal]) => {
+    const pct = Math.min(100, Math.round((val / goal) * 100));
+    document.getElementById('bar' + key).style.width = pct + '%';
+    document.getElementById('pct' + key).textContent = pct + '%';
+  });
+}
+
+function renderMyFoods() {
+  const container = document.getElementById('myFoodsList');
+  if (!state.myFoods.length) {
+    container.innerHTML = '<div class="empty-state"><div class="e-icon">📦</div>No saved foods yet!</div>';
+    return;
+  }
+  container.innerHTML = state.myFoods.map((f, i) => `
+    <div class="my-food-item">
+      <div>
+        <div class="mf-name">${f.name}</div>
+        <div class="mf-meta">${f.serving} • ${f.cals}cal • P:${f.protein}g C:${f.carbs}g F:${f.fat}g</div>
+      </div>
+      <div class="mf-actions">
+        <button class="btn-sm btn-add-log" onclick="addMyFoodToLog(${i})">+Log</button>
+        <button class="btn-sm btn-delete" onclick="deleteMyFood(${i})">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// PAIRING
+// ============================================================
+function renderPairings() {
+  document.getElementById('pairingGrid').innerHTML = pairings.map((p, i) => `
+    <div class="pairing-card" onclick="selectPairing(${i})" id="pair_${i}">
+      <div class="emoji">${p.emoji}</div>
+      <div class="pc-name">${p.name}</div>
+      <div class="pc-pair">Pairs with ${p.pair.split(' ')[0]}...</div>
+    </div>
+  `).join('');
+}
+
+function selectPairing(i) {
+  document.querySelectorAll('.pairing-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('pair_' + i).classList.add('selected');
+  const p = pairings[i];
+  const r = document.getElementById('pairingResult');
+  r.innerHTML = `<strong>🤝 ${p.name} + ${p.pair}</strong><br><br>${p.tip}`;
+  r.classList.add('show');
+}
+
+// ============================================================
+// BUILD YOUR PLATE
+// ============================================================
+function updatePlate() {
+  const veg = +document.getElementById('sliderVeg').value;
+  const grain = +document.getElementById('sliderGrain').value;
+  const protein = +document.getElementById('sliderProtein').value;
+  const fruit = +document.getElementById('sliderFruit').value;
+  const total = veg + grain + protein + fruit;
+
+  const toP = (v) => Math.round((v/total)*100);
+  const vp = toP(veg), gp = toP(grain), pp = toP(protein), fp = toP(fruit);
+
+  document.getElementById('vegPct').textContent = vp + '%';
+  document.getElementById('grainPct').textContent = gp + '%';
+  document.getElementById('proteinPct').textContent = pp + '%';
+  document.getElementById('fruitPct').textContent = fp + '%';
+  document.getElementById('vegLabel').textContent = `Veggies ${vp}%`;
+  document.getElementById('grainLabel').textContent = `Grains ${gp}%`;
+  document.getElementById('proteinLabel').textContent = `Protein ${pp}%`;
+  document.getElementById('fruitLabel').textContent = `Fruit ${fp}%`;
+
+  // Update plate visual via clip-paths
+  const tl = document.getElementById('ptl');
+  const tr = document.getElementById('ptr');
+  const bl = document.getElementById('pbl');
+  const br = document.getElementById('pbr');
+
+  // Simple quadrant opacity to reflect proportion
+  tl.style.opacity = 0.3 + (vp/100)*0.7;
+  tr.style.opacity = 0.3 + (gp/100)*0.7;
+  bl.style.opacity = 0.3 + (pp/100)*0.7;
+  br.style.opacity = 0.3 + (fp/100)*0.7;
+  document.getElementById('plateCenter').innerHTML = `${total ? Math.round((Math.max(vp,gp,pp,fp))) : 0}%<br><span style="font-size:0.65rem">max</span>`;
+
+  // Advice
+  let advice = '';
+  if (pp < 20) advice = '⚠️ Your protein portion is low. Aim for at least 25% to support your glute growth goals.';
+  else if (vp < 20) advice = '🥦 Try increasing your veggie portion — aim for ≥25% for fiber, vitamins, and fullness.';
+  else if (gp > 40) advice = '🌾 Your grains portion is quite high. Balance with more protein and veggies for better satiety.';
+  else advice = '✅ Nice balance! This plate supports your macros goals. Protein + veggies + complex carbs = J Empire fuel.';
+  document.getElementById('plateAdvice').textContent = advice;
+}
+
+// ============================================================
+// WATER TRACKER
+// ============================================================
+const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const FULL_DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+function getTodayKey() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function getWeekDates() {
+  const today = new Date();
+  // Monday-based week
+  const day = today.getDay(); // 0=Sun
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - ((day + 6) % 7));
+  const dates = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    dates.push(d.toISOString().split('T')[0]);
+  }
+  return dates;
+}
+
+function renderWater() {
+  const todayKey = getTodayKey();
+  const glasses = state.waterData[todayKey] || 0;
+
+  document.getElementById('todayGlasses').textContent = glasses;
+  document.getElementById('ozDisplay').textContent = (glasses * 8) + ' oz';
+  document.getElementById('progWater').textContent = (glasses * 8) + ' oz';
+
+  // Ring
+  const circumference = 226;
+  const offset = circumference - (circumference * Math.min(glasses / 8, 1));
+  document.getElementById('waterRing').style.strokeDashoffset = offset;
+
+  // Glass grid
+  const grid = document.getElementById('todayGlassGrid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= 8; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'glass-btn' + (i <= glasses ? ' filled' : '');
+    btn.textContent = '🥛';
+    btn.title = `Glass ${i}`;
+    btn.onclick = () => toggleGlass(i, todayKey);
+    grid.appendChild(btn);
+  }
+
+  renderWeekWater();
+}
+
+function toggleGlass(glassNum, dateKey) {
+  const current = state.waterData[dateKey] || 0;
+  if (glassNum <= current) {
+    state.waterData[dateKey] = glassNum - 1;
+  } else {
+    state.waterData[dateKey] = glassNum;
+  }
+  save();
+  renderWater();
+  showToast(`💧 ${state.waterData[dateKey]} glass${state.waterData[dateKey]!==1?'es':''} logged today!`);
+}
+
+function renderWeekWater() {
+  const weekDates = getWeekDates();
+  const todayKey = getTodayKey();
+  const container = document.getElementById('weekWaterLog');
+  let weekTotal = 0;
+
+  container.innerHTML = weekDates.map(dateKey => {
+    const d = new Date(dateKey + 'T12:00:00');
+    const dayName = FULL_DAYS[d.getDay()];
+    const glasses = state.waterData[dateKey] || 0;
+    weekTotal += glasses;
+    const isToday = dateKey === todayKey;
+    return `
+      <div class="water-day-row">
+        <div class="water-day-label">
+          <span>${dayName}${isToday ? ' <span style="color:var(--terracotta)">← today</span>' : ''}</span>
+          <span class="glass-count">${glasses}/8 glasses</span>
+        </div>
+        <div class="water-glasses">
+          ${Array.from({length: 8}, (_, i) => `
+            <div class="glass-btn${i < glasses ? ' filled' : ''}" style="width:28px;height:28px;font-size:0.85rem;cursor:${isToday?'pointer':'default'}"
+              ${isToday ? `onclick="toggleGlass(${i+1},'${dateKey}')"` : ''}>🥛</div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('weekTotalGlasses').textContent = weekTotal + ' glasses / ' + (weekTotal * 8) + ' oz';
+}
+
+// ============================================================
+// SUPPLEMENTS
+// ============================================================
+function renderSupplements() {
+  const container = document.getElementById('supplementList');
+  container.innerHTML = state.supplements.map(s => `
+    <div class="supplement-item">
+      <div class="supplement-header">
+        <div class="supplement-check ${s.taken ? 'checked' : ''}" onclick="toggleSupp(${s.id}, event)">${s.taken ? '✓' : ''}</div>
+        <div class="supplement-info">
+          <div class="supplement-name" style="${s.taken ? 'text-decoration:line-through;color:var(--brown-light)' : ''}">${s.name}</div>
+          <div class="supplement-timing">⏰ ${s.timing}</div>
+        </div>
+        <span class="supplement-expand" id="suppArrow_${s.id}" onclick="toggleSuppDetails(${s.id})">▾</span>
+      </div>
+      <div class="supplement-details" id="suppDetails_${s.id}">
+        <p>${s.info}</p>
+        <div class="supplement-tag-row">
+          ${s.tags.map(t => `<span class="supp-tag">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleSupp(id, e) {
+  e.stopPropagation();
+  const supp = state.supplements.find(s => s.id === id);
+  if (supp) { supp.taken = !supp.taken; save(); renderSupplements(); updateProgress(); }
+}
+
+function toggleSuppDetails(id) {
+  const details = document.getElementById('suppDetails_' + id);
+  const arrow = document.getElementById('suppArrow_' + id);
+  details.classList.toggle('open');
+  arrow.classList.toggle('open');
+}
+
+// ============================================================
+// HABITS
+// ============================================================
+function renderHabits() {
+  const container = document.getElementById('habitList');
+  container.innerHTML = state.habits.map(h => `
+    <div class="habit-item ${h.done ? 'done' : ''}" onclick="toggleHabit(${h.id})">
+      <div class="habit-checkbox">${h.done ? '✓' : ''}</div>
+      <span class="habit-label">${h.label}</span>
+    </div>
+  `).join('');
+  updateProgress();
+}
+
+function toggleHabit(id) {
+  const h = state.habits.find(h => h.id === id);
+  if (h) { h.done = !h.done; save(); renderHabits(); }
+}
+
+// ============================================================
+// WORKOUT CHECKLIST
+// ============================================================
+function renderWorkoutChecklist() {
+  const container = document.getElementById('workoutChecklist');
+  container.innerHTML = weekWorkouts.map(wd => {
+    const total = wd.exercises.length;
+    const done = wd.exercises.filter(e => state.workoutChecks[e.id]).length;
+    return `
+      <div class="workout-day-section">
+        <div class="workout-day-title">
+          <span>${wd.day}</span>
+          <span class="wkt-pct">${done}/${total} done</span>
+        </div>
+        ${wd.exercises.map(ex => `
+          <div class="exercise-item ${state.workoutChecks[ex.id] ? 'done' : ''}" onclick="toggleExercise('${ex.id}')">
+            <div class="exercise-checkbox">${state.workoutChecks[ex.id] ? '✓' : ''}</div>
+            <span class="exercise-name">${ex.name}</span>
+            <span class="exercise-meta">${ex.meta}</span>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }).join('');
+  updateProgress();
+}
+
+function toggleExercise(id) {
+  state.workoutChecks[id] = !state.workoutChecks[id];
+  save();
+  renderWorkoutChecklist();
+}
+
+function updateProgress() {
+  const habDone = state.habits.filter(h => h.done).length;
+  const habTotal = state.habits.length;
+  document.getElementById('progHabits').textContent = `${habDone}/${habTotal}`;
+
+  const allEx = weekWorkouts.flatMap(w => w.exercises);
+  const exDone = allEx.filter(e => state.workoutChecks[e.id]).length;
+  document.getElementById('progWorkout').textContent = `${exDone}/${allEx.length}`;
+}
+
+// ============================================================
+// FOOD LOG ACTIONS
+// ============================================================
+let currentModalMeal = '';
+
+function openModal(mealName) {
+  currentModalMeal = mealName;
+  document.getElementById('modalMealName').textContent = 'Add to ' + mealName;
+  document.getElementById('addFoodModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('addFoodModal').classList.remove('open');
+  ['modalFoodName','modalCals','modalPro','modalCarb','modalFat'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+function addFoodFromModal() {
+  const name = document.getElementById('modalFoodName').value.trim();
+  if (!name) { showToast('⚠️ Please enter a food name'); return; }
+  addEntry({
+    name,
+    meal: currentModalMeal,
+    cals: +document.getElementById('modalCals').value || 0,
+    protein: +document.getElementById('modalPro').value || 0,
+    carbs: +document.getElementById('modalCarb').value || 0,
+    fat: +document.getElementById('modalFat').value || 0,
+  });
+  closeModal();
+}
+
+function addLogEntry() {
+  const name = document.getElementById('logName').value.trim();
+  if (!name) { showToast('⚠️ Enter a food name'); return; }
+  addEntry({
+    name,
+    meal: document.getElementById('logMeal').value,
+    cals: +document.getElementById('logCals').value || 0,
+    protein: +document.getElementById('logPro').value || 0,
+    carbs: +document.getElementById('logCarb').value || 0,
+    fat: +document.getElementById('logFat').value || 0,
+  });
+  ['logName','logCals','logPro','logCarb','logFat'].forEach(id => document.getElementById(id).value = '');
+}
+
+function addEntry(entry) {
+  state.foodLog.push(entry);
+  save();
+  renderFoodLog();
+  updateMacroBanner();
+  showToast(`✅ ${entry.name} added to log!`);
+}
+
+function deleteLogEntry(i) {
+  state.foodLog.splice(i, 1);
+  save();
+  renderFoodLog();
+  updateMacroBanner();
+}
+
+function saveMyFood() {
+  const name = document.getElementById('mfName').value.trim();
+  if (!name) { showToast('⚠️ Enter a food name'); return; }
+  state.myFoods.push({
+    id: Date.now(),
+    name,
+    cals: +document.getElementById('mfCals').value || 0,
+    protein: +document.getElementById('mfPro').value || 0,
+    carbs: +document.getElementById('mfCarb').value || 0,
+    fat: +document.getElementById('mfFat').value || 0,
+    serving: document.getElementById('mfServing').value || '1 serving',
+  });
+  save();
+  renderMyFoods();
+  ['mfName','mfCals','mfPro','mfCarb','mfFat','mfServing'].forEach(id => document.getElementById(id).value = '');
+  showToast('⭐ Food saved!');
+}
+
+function deleteMyFood(i) {
+  state.myFoods.splice(i, 1);
+  save();
+  renderMyFoods();
+}
+
+function addMyFoodToLog(i) {
+  const f = state.myFoods[i];
+  addEntry({ name: f.name, meal: 'Snack', cals: f.cals, protein: f.protein, carbs: f.carbs, fat: f.fat });
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+function switchClTab(tab) {
+  document.querySelectorAll('.cl-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.cl-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// ============================================================
+// WEEKLY RESET (Mondays only)
+// ============================================================
+function confirmWeeklyReset() {
+  const today = new Date().getDay(); // 0=Sun, 1=Mon
+  if (today !== 1) {
+    showToast('⚠️ Weekly reset only runs on Mondays!');
+    return;
+  }
+  if (confirm('Reset this week\'s habits, supplements, and workout checks? Water log history is preserved.')) {
+    state.habits.forEach(h => h.done = false);
+    state.supplements.forEach(s => s.taken = false);
+    state.workoutChecks = {};
+    state.lastResetWeek = getTodayKey();
+    save();
+    renderHabits();
+    renderSupplements();
+    renderWorkoutChecklist();
+    showToast('🔄 Week reset! Fresh start, let\'s go!');
+  }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// DATE
+// ============================================================
+function setDate() {
+  const d = new Date();
+  document.getElementById('macroDate').textContent = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  setDate();
+  renderMealCards();
+  renderFoodLog();
+  updateMacroBanner();
+  renderPairings();
+  updatePlate();
+  renderMyFoods();
+  renderWater();
+  renderSupplements();
+  renderHabits();
+  renderWorkoutChecklist();
+}
+
+// Close modal on overlay click
+document.getElementById('addFoodModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+init();
+</script>
+</body>
+</html>
